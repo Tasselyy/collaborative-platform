@@ -1,0 +1,33 @@
+[
+    {
+      "date": "2023-01-01",
+      "product": "Widget A",
+      "sales": 100,
+      "revenue": 2500
+    },
+    {
+      "date": "2023-01-02",
+      "product": "Widget B",
+      "sales": 75,
+      "revenue": 1800
+    },
+    {
+      "date": "2023-01-03",
+      "product": "Widget A",
+      "sales": 120,
+      "revenue": 3000
+    },
+    {
+      "date": "2023-01-04",
+      "product": "Widget C",
+      "sales": 50,
+      "revenue": 1250
+    },
+    {
+      "date": "2023-01-05",
+      "product": "Widget B",
+      "sales": 80,
+      "revenue": 2000
+    }
+  ]
+  
