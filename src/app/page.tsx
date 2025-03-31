@@ -26,16 +26,17 @@ export default function Home() {
           <Link href="/about">
             <span className="hover:text-blue-600 cursor-pointer">About</span>
           </Link>
-          <Link href="/login">
+          <Link href="/sign-up">
             <span className="hover:text-blue-600 cursor-pointer px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
-              Login
-            </span>
-          </Link>
-          <Link href="/signup">
-            <span className="hover:text-blue-600 cursor-pointer px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
               Sign Up
             </span>
           </Link>
+          <Link href="/sign-in">
+            <span className="hover:text-blue-600 cursor-pointer px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
+              Login
+            </span>
+          </Link>
+          
         </nav>
       </header>
 
@@ -47,7 +48,7 @@ export default function Home() {
         <p className="text-lg mb-6 text-center">
           Upload datasets, visualize data, and collaborate in real-time with your team.
         </p>
-        <Link href="/signup">
+        <Link href="/sign-up">
           <span className="px-8 py-3 bg-blue-600 text-white rounded-full text-lg hover:bg-blue-700 cursor-pointer">
             Sign Up
           </span>
