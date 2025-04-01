@@ -8,15 +8,15 @@
 
 - **Yifan Yang**  
   - Student Number: 1011797619  
-  - Email: TODO
+  - Email: erik.yang@mail.utoronto.ca
 
 - **Zhengyang Liang**  
   - Student Number: 1010239225  
-  - Email: TODO
+  - Email: zy.liang@mail.utoronto.ca
 
 - **Yilin Huai**  
   - Student Number: 1001297036  
-  - Email: TODO
+  - Email: yilin.huai@mail.utoronto.ca
 
 ---
 
