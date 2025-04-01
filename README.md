@@ -60,25 +60,34 @@ The Collaborative Data Analysis Platform aims to achieve the following objective
 ## Features
 
 - **User Authentication & Team Workspace Management:**  
-  Secure user sign-up and login with session management. Teams can be created and managed for collaborative projects.
+  Secure sign-up and login functionality, enabling users to create personal profiles and collaborate in team workspaces. Access control ensures that only authorized team members can view or modify shared datasets and visualizations.
 
 - **Dataset Upload & Management:**  
-  Support for uploading CSV, JSON, and Excel files with associated metadata management. Files are stored on the cloud.
+  Support for uploading datasets in various formats—including CSV, JSON, and Excel—while automatically storing file metadata in PostgreSQL and the actual files in a cloud storage solution. This ensures reliable and scalable data handling.
 
 - **Data Visualization:**  
-  Integration of Chart.js to create interactive charts that can be exported as images.
+  Integration with libraries such as Chart.js enables users to create interactive and dynamic visualizations. Visualizations can be customized, exported as images, and embedded within the platform for easy sharing and presentation.
 
 - **Data Table View:**  
-  Sortable and filterable table view for datasets.
+  An intuitive, sortable, and filterable table interface allows users to explore datasets with ease. Users can quickly search and sort data, facilitating efficient analysis and decision-making.
+
+- **Dataset Metadata Management:**  
+  Comprehensive metadata management ensures that each dataset’s details (such as creation date, file type, and associated tags) are tracked in the PostgreSQL database, making it easy to search, filter, and organize datasets.
 
 - **Sharing Permissions:**  
-  Flexible options for setting datasets and visualizations as public, private, or team-accessible.
+  Flexible permission settings allow datasets and visualizations to be shared publicly, privately, or within team workspaces. This robust sharing mechanism supports collaboration while ensuring data security.
 
 - **Comments & Annotations:**  
-  Real-time commenting and annotation capabilities on visualizations.
+  Real-time commenting and annotation capabilities allow team members to discuss and document insights directly on visualizations, enhancing collaborative analysis and feedback.
 
 - **Export Functionality:**  
-  Ability to export visualizations as images for external use.
+  Visualizations can be exported as images (PNG, JPG, or SVG) to facilitate reporting, presentations, and further analysis outside the platform.
+
+- **Robust Backend Infrastructure:**  
+  Utilizing PostgreSQL for metadata and user data ensures reliable, scalable storage, while cloud storage integration (e.g., AWS S3) provides secure and efficient file handling.
+
+This comprehensive feature set addresses the key challenges of data collaboration and analysis by combining user-friendly interfaces, robust backend technologies, and real-time collaboration tools in one integrated platform.
+
 
 ---
 
@@ -90,15 +99,15 @@ The Collaborative Data Analysis Platform aims to achieve the following objective
    - Navigate to the "Sign Up" page.
    - Enter your name, email, and password.
    - Click the "Sign Up" button.
-   - A confirmation message is displayed, and you are redirected to the dashboard.
+   - A confirmation toast is displayed, and you are redirected to the dashboard.
 
 2. **Log In:**  
    - Go to the "Login" page.
    - Enter your registered email and password.
+   - Alternatively, choose to login with Github or Apple
    - Click "Login" to access your dashboard.
 
 ### Navigating the Dashboard
-
 TODO
 
 ---
