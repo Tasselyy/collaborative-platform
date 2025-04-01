@@ -7,6 +7,8 @@ import { useState } from "react"
 
 export default function UploadPage() {
     const [file, setFile] = useState<File>()
+    const [message, setMessage] = useState('');
+    const [fileUrl, setFileUrl] = useState('');
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -16,10 +18,24 @@ export default function UploadPage() {
             const data = new FormData()
             data.set('file', file)
 
-            const res = await fetch('/api/upload', {
+            setMessage('Uploading...');
+            //upload to public
+            // const res = await fetch('/api/upload', {
+            //     method: 'POST',
+            //     body: data
+            // })
+            //upload to cloud
+            const res = await fetch('/api/cloud-upload', {
                 method: 'POST',
                 body: data
             })
+
+            if (res.ok) {
+                setMessage('✅ File uploaded successfully!');
+            } else {
+                setMessage('❌ Upload failed.');
+            }
+
             // handle the error
             if (!res.ok) throw new Error(await res.text())
         } catch (e: any) {
@@ -49,6 +65,7 @@ export default function UploadPage() {
                 </CardContent>
                 <CardFooter>
                     <Button size="lg" type="submit">Upload</Button>
+                    {message && <p className="mt-2 text-sm text-blue-600">{message}</p>}
                 </CardFooter>
             </Card>
         </form>
