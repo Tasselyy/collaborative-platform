@@ -4,11 +4,11 @@ import { Label } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
+import { getSignedFileUrl } from "@/lib/s3"
 
 export default function UploadPage() {
     const [file, setFile] = useState<File>()
     const [message, setMessage] = useState('');
-    const [fileUrl, setFileUrl] = useState('');
 
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -31,7 +31,9 @@ export default function UploadPage() {
             })
 
             if (res.ok) {
-                setMessage('✅ File uploaded successfully!');
+                const result = await res.json();
+                setMessage(`✅ File uploaded successfully! url: ${result.url}`);
+
             } else {
                 setMessage('❌ Upload failed.');
             }

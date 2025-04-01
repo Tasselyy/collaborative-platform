@@ -19,7 +19,7 @@ export const uploadToS3 = async (buffer: Buffer, fileName: string, contentType: 
 
   await s3.send(command);
 
-  return `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${fileName}`;
+  // return `https://${process.env.AWS_BUCKET_NAME}.s3.amazonaws.com/${fileName}`;
 };
 
 export const getSignedFileUrl = async (fileName: string) => {
