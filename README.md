@@ -60,7 +60,7 @@ The Collaborative Data Analysis Platform aims to achieve the following objective
 ## Features
 
 - **User Authentication & Team Workspace Management:**  
-  Secure sign-up and login functionality, enabling users to create personal profiles and collaborate in team workspaces. Access control ensures that only authorized team members can view or modify shared datasets and visualizations.
+  Secure login functionality, enabling users to create personal profiles and collaborate in team workspaces. Access control ensures that only authorized team members can view or modify shared datasets and visualizations.
 
 - **Dataset Upload & Management:**  
   Support for uploading datasets in various formats—including CSV, JSON, and Excel—while automatically storing file metadata in PostgreSQL and the actual files in a cloud storage solution. This ensures reliable and scalable data handling.
@@ -84,7 +84,7 @@ The Collaborative Data Analysis Platform aims to achieve the following objective
   Visualizations can be exported as images (PNG, JPG, or SVG) to facilitate reporting, presentations, and further analysis outside the platform.
 
 - **Robust Backend Infrastructure:**  
-  Utilizing PostgreSQL for metadata and user data ensures reliable, scalable storage, while cloud storage integration (e.g., AWS S3) provides secure and efficient file handling.
+  Utilizing PostgreSQL for metadata and user data ensures reliable, scalable storage, while cloud storage integration AWS S3 provides secure and efficient file handling.
 
 This comprehensive feature set addresses the key challenges of data collaboration and analysis by combining user-friendly interfaces, robust backend technologies, and real-time collaboration tools in one integrated platform.
 
