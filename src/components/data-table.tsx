@@ -25,7 +25,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { cn } from "@/lib/utils";
+import { useEffect,useState } from "react";
 
 // Define the type for a dataset record.
 export type DatasetRecord = {
@@ -39,40 +39,6 @@ export type DatasetRecord = {
   owner: string;
 };
 
-// Sample data array for demonstration.
-const data: DatasetRecord[] = [
-  {
-    id: "ds1",
-    name: "Sales Data Jan 2023",
-    description: "This dataset contains sales records for January 2023 including totals, averages, and variance data.",
-    createdAt: "2023-01-31T12:00:00Z",
-    team: "Marketing",
-    visibility: "TEAM",
-    visualizations: 3,
-    owner: "Alice",
-  },
-  {
-    id: "ds2",
-    name: "Customer Feedback Q1",
-    description: "Compilation of customer reviews and survey responses for the first quarter of 2023.",
-    createdAt: "2023-04-01T09:30:00Z",
-    team: "Support",
-    visibility: "PRIVATE",
-    visualizations: 2,
-    owner: "Bob",
-  },
-  {
-    id: "ds3",
-    name: "Website Traffic Data",
-    description: "Aggregated data tracking website visitors and engagement metrics over the past year.",
-    createdAt: "2023-05-15T15:45:00Z",
-    team: "",
-    visibility: "PUBLIC",
-    visualizations: 5,
-    owner: "Charlie",
-  },
-];
-
 // Define the columns for the table.
 export const columns: ColumnDef<DatasetRecord>[] = [
   {
@@ -82,7 +48,7 @@ export const columns: ColumnDef<DatasetRecord>[] = [
   },
   {
     accessorKey: "description",
-    header: "Short Description",
+    header: "Description",
     cell: ({ row }) => {
       const desc = row.getValue("description") as string;
       return desc.length > 50 ? desc.slice(0, 50) + "..." : desc;
@@ -135,6 +101,14 @@ export function DataTable() {
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
+  const [data, setData] = useState<DatasetRecord[]>([]);
+
+  useEffect(() => {
+    fetch("/api/dataset")
+      .then(res => res.json())
+      .then(setData)
+      // .finally(() => setLoading(false))
+  }, [])
 
   const table = useReactTable({
     data,
@@ -179,9 +153,9 @@ export function DataTable() {
                     {header.isPlaceholder
                       ? null
                       : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
                   </TableHead>
                 ))}
               </TableRow>

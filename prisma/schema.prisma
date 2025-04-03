@@ -45,6 +45,7 @@ model Dataset {
   name           String
   description    String?
   fileUrl        String
+  fileName       String
   ownerId        String
   owner          User            @relation(fields: [ownerId], references: [id])
   visibility     Visibility      @default(PRIVATE)
