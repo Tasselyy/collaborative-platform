@@ -14,28 +14,47 @@ enum Visibility {
   TEAM
 }
 
+enum TeamRole {
+  OWNER
+  MEMBER
+}
+
 model Team {
+  id          String        @id @default(cuid())
+  name        String
+  description String?       // Adding description field
+  members     TeamMember[]  // Changed to use the join table
+  datasets    Dataset[]
+  createdAt   DateTime      @default(now())
+}
+
+// New join table to track team membership details
+model TeamMember {
   id        String    @id @default(cuid())
-  name      String
-  members   User[]    @relation("TeamMembership")
-  datasets  Dataset[]
-  createdAt DateTime  @default(now())
+  team      Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  teamId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String
+  role      TeamRole  @default(MEMBER)
+  joinedAt  DateTime  @default(now())
+
+  @@unique([teamId, userId]) // Ensure a user can only be in a team once
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String       @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?      @unique
   password      String?
   image         String?
   datasets      Dataset[]
   comments      Comment[]
-  teams         Team[]    @relation("TeamMembership")
-  createdAt     DateTime  @default(now())
+  teams         TeamMember[] // Changed to use the join table
+  createdAt     DateTime     @default(now())
   accounts      Account[]
   sessions      Session[]
   emailVerified Boolean?
-  updatedAt     DateTime
+  updatedAt     DateTime    @updatedAt
 
   @@map("user")
 }
