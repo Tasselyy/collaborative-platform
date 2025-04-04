@@ -9,8 +9,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { authClient } from "@/lib/auth-client";
 
 export default function AboutPage() {
+  const {data: session} = authClient.useSession();
   return (
     <div className="min-h-screen flex flex-col bg-gray-50 text-gray-800">
       {/* Header */}
@@ -29,16 +31,19 @@ export default function AboutPage() {
               About
             </Button>
           </Link>
-          <Link href="/sign-up">
-            <Button variant="default" className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700">
-              Sign Up
-            </Button>
-          </Link>
-          <Link href="/sign-in">
-            <Button variant="default" className="px-4 py-2 bg-green-600 text-white hover:bg-green-700">
-              Login
-            </Button>
-          </Link>
+          {session ? (
+            <Link href="/dashboard">
+              <Button variant="outline" className="px-4 py-2 bg-blue-600 text-white hover:bg-blue-700">
+                Go to Dashboard
+              </Button>
+            </Link>
+          ) : (
+            <Link href="/sign-in">
+              <Button variant="outline" className="px-4 py-2 bg-green-600 text-white hover:bg-green-700">
+                Login
+              </Button>
+            </Link>
+          )}
         </nav>
       </header>
 

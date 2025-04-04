@@ -1,10 +1,7 @@
-// app/page.tsx
 "use client";
 
 import Link from "next/link";
-import {
-  Button,
-} from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
@@ -19,7 +16,22 @@ import teamImage from "@/icons/team.svg";
 import metaImage from "@/icons/metadata.svg";
 import commentImage from "@/icons/comment.svg";
 
+import { authClient } from "@/lib/auth-client"
+import { useRouter } from "next/navigation"
+
 export default function Home() {
+  const { data: session } = authClient.useSession();
+const router = useRouter()
+
+  const handleSignOut = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/")
+        },
+      },
+    })
+  }
   return (
     <div className="min-h-screen flex flex-col">
       {/* Navigation Bar */}
@@ -38,11 +50,25 @@ export default function Home() {
               About
             </Button>
           </Link>
-          <Link href="/sign-in">
-            <Button variant="outline" className="px-4 py-2 bg-green-600 text-white hover:bg-green-700">
-              Login
-            </Button>
-          </Link>
+          {session ? (
+            <Link href="/dashboard">
+              <Button >
+                Go to Dashboard
+              </Button>
+            </Link>
+          ) : (
+            <Link href="/sign-in">
+              <Button>
+                Login
+              </Button>
+            </Link>
+          )}
+          {session ? (
+              <Button variant="destructive" onClick={handleSignOut} >
+                Logout
+              </Button>
+          ) : <></>
+          }
         </nav>
       </header>
 
@@ -54,82 +80,49 @@ export default function Home() {
         <p className="text-lg mb-6 text-center">
           Upload datasets, visualize data, and collaborate in real-time with your team.
         </p>
-        <Link href="/sign-in">
-          <Button className="px-8 py-3 bg-blue-600 text-white rounded-full text-lg hover:bg-blue-700">
-            Get started
-          </Button>
-        </Link>
+        {session ? (
+          <Link href="/dashboard">
+            <Button className="px-8 py-3 bg-blue-600 text-white rounded-full text-lg hover:bg-blue-700">
+              Welcome back, {session.user.name}. Go to Your Dashboard
+            </Button>
+          </Link>
+        ) : (
+          <Link href="/sign-in">
+            <Button className="px-8 py-3 bg-blue-600 text-white rounded-full text-lg hover:bg-blue-700">
+              Get started
+            </Button>
+          </Link>
+        )}
       </section>
 
       {/* Key Features Section */}
       <section className="p-8 bg-white">
         <h2 className="text-2xl font-bold text-center mb-8">Key Features</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Feature Card 1 */}
-          <Card className="border rounded-lg shadow hover:shadow-lg transition">
-            <CardHeader className="flex items-center space-x-2 mb-2">
-              <img src={uploadImage.src} alt="Dataset Upload" className="h-6 w-6" />
-              <CardTitle className="font-bold">Dataset Upload</CardTitle>
-            </CardHeader>
-            <CardContent className="text-sm text-gray-700">
-              Upload CSV, JSON, and Excel files seamlessly.
-            </CardContent>
-          </Card>
-
-          {/* Feature Card 2 */}
-          <Card className="border rounded-lg shadow hover:shadow-lg transition">
-            <CardHeader className="flex items-center space-x-2 mb-2">
-              <img src={chartImage.src} alt="Data Visualization" className="h-6 w-6" />
-              <CardTitle className="font-bold">Data Visualization</CardTitle>
-            </CardHeader>
-            <CardContent className="text-sm text-gray-700">
-              Create interactive charts and export them as images.
-            </CardContent>
-          </Card>
-
-          {/* Feature Card 3 */}
-          <Card className="border rounded-lg shadow hover:shadow-lg transition">
-            <CardHeader className="flex items-center space-x-2 mb-2">
-              <img src={tableImage.src} alt="Data Table" className="h-6 w-6" />
-              <CardTitle className="font-bold">Data Table</CardTitle>
-            </CardHeader>
-            <CardContent className="text-sm text-gray-700">
-              Sort and filter your data with an intuitive table view.
-            </CardContent>
-          </Card>
-
-          {/* Feature Card 4 */}
-          <Card className="border rounded-lg shadow hover:shadow-lg transition">
-            <CardHeader className="flex items-center space-x-2 mb-2">
-              <img src={teamImage.src} alt="Team Workspace" className="h-6 w-6" />
-              <CardTitle className="font-bold">Team Workspace</CardTitle>
-            </CardHeader>
-            <CardContent className="text-sm text-gray-700">
-              Create and manage teams with ease.
-            </CardContent>
-          </Card>
-
-          {/* Feature Card 5 */}
-          <Card className="border rounded-lg shadow hover:shadow-lg transition">
-            <CardHeader className="flex items-center space-x-2 mb-2">
-              <img src={metaImage.src} alt="Metadata Management" className="h-6 w-6" />
-              <CardTitle className="font-bold">Metadata Management</CardTitle>
-            </CardHeader>
-            <CardContent className="text-sm text-gray-700">
-              Manage dataset details and control sharing permissions.
-            </CardContent>
-          </Card>
-
-          {/* Feature Card 6 */}
-          <Card className="border rounded-lg shadow hover:shadow-lg transition">
-            <CardHeader className="flex items-center space-x-2 mb-2">
-              <img src={commentImage.src} alt="Comments & Annotations" className="h-6 w-6" />
-              <CardTitle className="font-bold">Comments & Annotations</CardTitle>
-            </CardHeader>
-            <CardContent className="text-sm text-gray-700">
-              Collaborate with in-depth comments on visualizations.
-            </CardContent>
-          </Card>
+          {/* Feature Cards */}
+          {[{
+            img: uploadImage.src, title: "Dataset Upload", description: "Upload CSV, JSON, and Excel files seamlessly."
+          },{
+            img: chartImage.src, title: "Data Visualization", description: "Create interactive charts and export them as images."
+          },{
+            img: tableImage.src, title: "Data Table", description: "Sort and filter your data with an intuitive table view."
+          },{
+            img: teamImage.src, title: "Team Workspace", description: "Create and manage teams with ease."
+          },{
+            img: metaImage.src, title: "Metadata Management", description: "Manage dataset details and control sharing permissions."
+          },{
+            img: commentImage.src, title: "Comments & Annotations", description: "Collaborate with in-depth comments on visualizations."
+          }].map((feature, index) => (
+            <Card key={index} className="border rounded-lg shadow hover:shadow-lg transition">
+              <CardHeader className="flex items-center space-x-2 mb-2">
+                <img src={feature.img} alt={feature.title} className="h-6 w-6" />
+                <CardTitle className="font-bold">{feature.title}</CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm text-gray-700">
+                {feature.description}
+              </CardContent>
+            </Card>
+          ))}
         </div>
       </section>
 
