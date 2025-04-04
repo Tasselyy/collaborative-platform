@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import CommentCard from "./CommentCard";
-import AddCommentForm from "./AddCommentForm";
+import CommentCard from "./comment-card";
+import AddCommentForm from "./add-comment-form";
 import { Comment } from "@/types/comment";
 import { authClient } from "@/lib/auth-client"
 
@@ -19,7 +19,7 @@ export default function CommentSection({ visualizationId, currentUserId }: Comme
   const fetchComments = async () => {
     setLoading(true);
     try {
-      console.log('session: ', session )
+      
       const res = await fetch(`/api/comments?vizId=${visualizationId}`);
       if (res.ok) {
         const data: Comment[] = await res.json();
@@ -63,11 +63,9 @@ export default function CommentSection({ visualizationId, currentUserId }: Comme
 
   const handleDeleteComment = async (commentId: string) => {
     try {
-      console.log('HANDLE DELETE COMMENT')
       const res = await fetch(`/api/comments/${commentId}`, {
         method: "DELETE",
       });
-      console.log
 
       if (res.ok) {
         setComments((prev) => prev.filter((comment) => comment.id !== commentId));
