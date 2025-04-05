@@ -3,9 +3,11 @@ import { NextRequest, NextResponse } from 'next/server';
 import { addTeamMember } from '@/lib/services/team.service';
 import { TeamRole, Prisma} from '@prisma/client';
 
-interface AddMemberRequest {
-  userId: string;
-  role?: TeamRole;
+interface AddMembersRequest {
+  members: {
+    userId: string;
+    role?: TeamRole;
+  }[];
 }
 
 type RouteParams = {
@@ -21,57 +23,43 @@ export async function POST(
     const { teamId } = await routeParams.params;
 
     if (!teamId) {
-      return NextResponse.json(
-        { error: 'Team ID is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Team ID is required' }, { status: 400 });
     }
 
-    const body: AddMemberRequest = await request.json();
+    const body: AddMembersRequest = await request.json();
 
-    if (!body.userId) {
-      return NextResponse.json(
-        { error: 'User ID is required' },
-        { status: 400 }
-      );
+    if (!body.members || !Array.isArray(body.members) || body.members.length === 0) {
+      return NextResponse.json({ error: 'No members provided' }, { status: 400 });
     }
 
-    const member = await addTeamMember(
-      teamId,
-      body.userId,
-      body.role || TeamRole.MEMBER
-    );
+    const results = [];
 
-    return NextResponse.json(member);
+    for (const { userId, role } of body.members) {
+      if (!userId) continue;
+
+      try {
+        const member = await addTeamMember(
+          teamId,
+          userId,
+          role || TeamRole.MEMBER
+        );
+        results.push(member);
+      } catch (err: any) {
+        // Skip duplicates silently or log
+        if (
+          err instanceof Prisma.PrismaClientKnownRequestError &&
+          err.code === 'P2002'
+        ) {
+          console.log("already a member")
+          continue; // already a member
+        }
+        console.error(`Failed to add ${userId}:`, err);
+      }
+    }
+
+    return NextResponse.json({ added: results.length, members: results });
   } catch (error) {
-    if (error instanceof Error) {
-      console.error('Error message:', error.message);
-    } else {
-      console.error('Unexpected error:', error);
-    }
-
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === 'P2002'
-    ) {
-      return NextResponse.json(
-        { error: 'User is already a member of this team' },
-        { status: 409 } // Conflict
-      );
-    }
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === 'P2025'
-    ) {
-      return NextResponse.json(
-        { error: 'Team or user not found' },
-        { status: 404 } // Not Found
-      );
-    }
-    
-    return NextResponse.json(
-      { error: 'Failed to add team member' },
-      { status: 500 }
-    );
+    console.error("Unexpected error:", error);
+    return NextResponse.json({ error: 'Failed to add team members' }, { status: 500 });
   }
 }
