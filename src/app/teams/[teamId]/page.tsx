@@ -45,19 +45,18 @@ interface User {
 }
 
 interface TeamMember {
-  id: string;
-  userId: string;
-  teamId: string;
+  id: string; // user id
+  name: string;
+  email: string;
+  image?: string;
   role: string;
-  createdAt: string;
-  user: User;
+  joinedAt?: string;
 }
 
 interface Team {
   id: string;
   name: string;
   createdAt: string;
-  updatedAt: string;
   members: TeamMember[];
 }
 
@@ -78,7 +77,9 @@ export default function TeamDetailPage() {
 
       setIsLoading(true);
       try {
-        const response = await fetch(`/api/teams?teamId=${teamId}`);
+        const response = await fetch(`/api/teams/${teamId}`);
+        
+
         if (!response.ok) {
           throw new Error(`Failed to fetch team: ${response.status}`);
         }
@@ -115,7 +116,7 @@ export default function TeamDetailPage() {
       // Update local state
       setTeam({
         ...team,
-        members: team.members.filter(member => member.userId !== memberToRemove)
+        members: team.members.filter(member => member.id !== memberToRemove)
       });
 
       toast.success("Member removed", {
@@ -132,7 +133,7 @@ export default function TeamDetailPage() {
 
   // Check if the current user is a team admin
   const isUserAdmin = team?.members.some(
-    member => member.user.id === session?.user?.id && member.role === "OWNER"
+    member => member.id === session?.user?.id && member.role === "OWNER"
   );
 
   if (isLoading) {
@@ -250,29 +251,29 @@ export default function TeamDetailPage() {
                     if (a.role !== "OWNER" && b.role === "OWNER") return 1;
 
                     // Then sort alphabetically by name
-                    return a.user.name.localeCompare(b.user.name);
+                    return a.name.localeCompare(b.name);
                   })
                   .map((member) => (
                     <div key={member.id} className="flex items-center justify-between p-3 rounded-md hover:bg-muted">
                       <div className="flex items-center gap-3">
                         <Avatar className="h-6 w-6">
-                          {member.user.image ? (
-                            <AvatarImage src={member.user.image} onError={(e) => {
+                          {member.image ? (
+                            <AvatarImage src={member.image} onError={(e) => {
                               // When image fails to load, hide the img element
                               (e.target as HTMLImageElement).style.display = 'none';
                             }} />
                           ) : null}
-                          <AvatarFallback>{member.user.name.slice(0, 2).toUpperCase()}</AvatarFallback>
+                          <AvatarFallback>{member.name.slice(0, 2).toUpperCase()}</AvatarFallback>
                         </Avatar>
                         <div>
                           <div className="flex items-center">
-                            <p className="font-medium">{member.user.name}</p>
+                            <p className="font-medium">{member.name}</p>
                             <Badge variant="default" className="ml-2">
                               {member.role === "OWNER" ? "Admin" : "Member"}
                             </Badge>
                           </div>
                           <p className="text-xs text-muted-foreground flex items-center">
-                            <Mail className="h-3 w-3 mr-1" /> {member.user.email}
+                            <Mail className="h-3 w-3 mr-1" /> {member.email}
                           </p>
                         </div>
                       </div>
@@ -281,7 +282,7 @@ export default function TeamDetailPage() {
                           variant="ghost"
                           size="sm"
                           className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                          onClick={() => handleRemoveMember(member.userId)}
+                          onClick={() => handleRemoveMember(member.id)}
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>

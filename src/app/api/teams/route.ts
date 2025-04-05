@@ -59,63 +59,63 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
   }
 }
-export async function GET(request: NextRequest) {
-  try {
-    // Get the team ID from the URL query parameters
-    const url = new URL(request.url)
-    const teamId = url.searchParams.get('teamId')
+// export async function GET(request: NextRequest) {
+//   try {
+//     // Get the team ID from the URL query parameters
+//     const url = new URL(request.url)
+//     const teamId = url.searchParams.get('teamId')
     
-    if (!teamId) {
-      return NextResponse.json({ error: 'Team ID is required' }, { status: 400 })
-    }
+//     if (!teamId) {
+//       return NextResponse.json({ error: 'Team ID is required' }, { status: 400 })
+//     }
 
-    // Get session on the server securely
-    const session = await auth.api.getSession({ headers: await headers() })
+//     // Get session on the server securely
+//     const session = await auth.api.getSession({ headers: await headers() })
 
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-    }
+//     if (!session?.user?.id) {
+//       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+//     }
 
-    // Check if the user is a member of the team
-    const userTeamMembership = await prisma.teamMember.findFirst({
-      where: {
-        teamId: teamId,
-        userId: session.user.id
-      }
-    })
+//     // Check if the user is a member of the team
+//     const userTeamMembership = await prisma.teamMember.findFirst({
+//       where: {
+//         teamId: teamId,
+//         userId: session.user.id
+//       }
+//     })
 
-    if (!userTeamMembership) {
-      return NextResponse.json({ error: 'You do not have access to this team' }, { status: 403 })
-    }
+//     if (!userTeamMembership) {
+//       return NextResponse.json({ error: 'You do not have access to this team' }, { status: 403 })
+//     }
 
-    // Fetch the team with members
-    const team = await prisma.team.findUnique({
-      where: {
-        id: teamId
-      },
-      include: {
-        members: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                name: true,
-                email: true,
-                image: true
-              }
-            }
-          }
-        }
-      }
-    })
+//     // Fetch the team with members
+//     const team = await prisma.team.findUnique({
+//       where: {
+//         id: teamId
+//       },
+//       include: {
+//         members: {
+//           include: {
+//             user: {
+//               select: {
+//                 id: true,
+//                 name: true,
+//                 email: true,
+//                 image: true
+//               }
+//             }
+//           }
+//         }
+//       }
+//     })
 
-    if (!team) {
-      return NextResponse.json({ error: 'Team not found' }, { status: 404 })
-    }
+//     if (!team) {
+//       return NextResponse.json({ error: 'Team not found' }, { status: 404 })
+//     }
 
-    return NextResponse.json(team, { status: 200 })
-  } catch (error) {
-    console.error('Error fetching team:', error)
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
-  }
-}
+//     return NextResponse.json(team, { status: 200 })
+//   } catch (error) {
+//     console.error('Error fetching team:', error)
+//     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+//   }
+// }
