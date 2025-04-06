@@ -56,14 +56,15 @@ model Dataset {
 }
 
 model Visualization {
-  id        String    @id @default(cuid())
-  title     String
-  type      String // e.g. "bar", "line"
-  config    Json // Chart config
-  datasetId String
-  dataset   Dataset   @relation(fields: [datasetId], references: [id])
-  comments  Comment[]
-  createdAt DateTime  @default(now())
+  id          String    @id @default(cuid())
+  title       String
+  description String?
+  type        String           // e.g. "bar", "line", etc.
+  config      Json             // full chart config: options + data + customSettings
+  datasetId   String
+  dataset     Dataset          @relation(fields: [datasetId], references: [id])
+  comments    Comment[]
+  createdAt   DateTime  @default(now())
 }
 
 model Comment {
