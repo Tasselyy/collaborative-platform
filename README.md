@@ -181,7 +181,7 @@ Since authentication is handled via OAuth, there is no need to enter an email an
 1. **Clone the Repository:**
 
     ```bash
-    git clone TODO
+    git clone https://github.com/Tasselyy/collaborative-platform/tree/feiyangfan-submission
     cd collaborative-platform
     ```
 
