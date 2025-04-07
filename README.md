@@ -1,5 +1,9 @@
 # Collaborative Data Analysis Platform Final Report
 
+## Video Demo
+
+[Video Demo Link in UofT OneDrive](https://utoronto-my.sharepoint.com/:v:/g/personal/feiyang_fan_mail_utoronto_ca/EU9P7b9aE8BKlMMA_A7y9pMB0hudLXNrlTOv26L8aMPwHQ?nav=eyJyZWZlcnJhbEluZm8iOnsicmVmZXJyYWxBcHAiOiJPbmVEcml2ZUZvckJ1c2luZXNzIiwicmVmZXJyYWxBcHBQbGF0Zm9ybSI6IldlYiIsInJlZmVycmFsTW9kZSI6InZpZXciLCJyZWZlcnJhbFZpZXciOiJNeUZpbGVzTGlua0NvcHkifX0&e=alBdCR)
+
 ## Team Information
 
 -   **Feiyang Fan**
