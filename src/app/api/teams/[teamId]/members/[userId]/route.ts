@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { removeTeamMember } from '@/lib/services/team.service';
 import { Prisma } from '@prisma/client';
-import { auth } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
+import { requireTeamOwner } from '@/lib/services/auth.service';
 
 type RouteParams = {
   params: Promise<{ teamId: string; userId: string }>;
@@ -21,33 +20,13 @@ export async function DELETE(
         { status: 400 }
       );
     }
-
-    // Get current session
-    const session = await auth.api.getSession({ headers: request.headers });
-    if (!session?.user?.id) {
-      return NextResponse.json(
-        { error: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
-
     // Check if current user is the OWNER of the team
-    const currentMember = await prisma.teamMember.findFirst({
-      where: {
-        teamId,
-        userId: session.user.id,
-      },
-    });
-
-    if (!currentMember || currentMember.role !== 'OWNER') {
-      return NextResponse.json(
-        { error: 'Only the team owner can remove members' },
-        { status: 403 }
-      );
+    const authResult = await requireTeamOwner(request.headers, teamId);
+    if (!authResult.success) {
+      return authResult.error;
     }
-
     // Prevent owner from removing themselves
-    if (session.user.id === userId) {
+    if (authResult.userId === userId) {
       return NextResponse.json(
         { error: 'You cannot remove yourself as the owner' },
         { status: 400 }

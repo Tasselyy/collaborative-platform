@@ -106,3 +106,61 @@ export async function removeTeamMember(
 
   return !!result;
 }
+
+export async function disbandTeam(teamId: string) {
+  return prisma.team.delete({
+    where: {
+      id: teamId
+    }
+  });
+}
+
+export async function createTeam(name: string, ownerId: string, memberIds: string[] = []) {
+  return prisma.team.create({
+    data: {
+      name,
+      members: {
+        create: [
+          {
+            userId: ownerId,
+            role: TeamRole.OWNER,
+          },
+          ...memberIds.map((id) => ({
+            userId: id,
+            role: TeamRole.MEMBER,
+          })),
+        ],
+      },
+    },
+    include: {
+      members: {
+        include: {
+          user: true,
+        },
+      },
+    },
+  });
+}
+
+export async function getUserTeams(userId: string) {
+  const userTeams = await prisma.teamMember.findMany({
+    where: {
+      userId: userId
+    },
+    include: {
+      team: true
+    },
+    orderBy: {
+      joinedAt: 'desc'
+    }
+  });
+
+  // Transform the data to a more frontend-friendly format
+  return userTeams.map(membership => ({
+    id: membership.team.id,
+    name: membership.team.name,
+    description: membership.team.description,
+    role: membership.role,
+    joinedAt: membership.joinedAt
+  }));
+}

@@ -1,18 +1,17 @@
+// src/app/api/users/search/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
+import { requireAuth } from "@/lib/services/auth.service";
 
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const query = searchParams.get("q") || "";
 
-    const session = await auth.api.getSession({
-        headers: await headers()
-    });
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    // Use auth service to check authentication
+    const authResult = await requireAuth(req.headers);
+    if (!authResult.success) {
+      return authResult.error;
     }
 
     const users = await prisma.user.findMany({
@@ -21,7 +20,7 @@ export async function GET(req: NextRequest) {
           { name: { contains: query, mode: "insensitive" } },
           { email: { contains: query, mode: "insensitive" } },
         ],
-        NOT: { id: session.user.id },
+        NOT: { id: authResult.userId },
       },
       select: {
         id: true,

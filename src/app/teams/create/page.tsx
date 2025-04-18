@@ -43,18 +43,19 @@ export default function AddTeamPage() {
   const [users, setUsers] = useState<User[]>([])
   const [selectedUsers, setSelectedUsers] = useState<User[]>([])
   const [isLoading, setIsLoading] = useState(false)
-  
+  const [hasSearched, setHasSearched] = useState(false)
   const handleSearch = async () => {
     if (!searchInput.trim()) {
       setUsers([])
+      setHasSearched(true)
       return
     }
 
     setIsLoading(true)
-
+    setHasSearched(true)
     try {
       const res = await fetch(`/api/users/search?q=${encodeURIComponent(searchInput.trim())}`)
-      
+
       if (res.ok) {
         const data = await res.json()
         setUsers(data)
@@ -89,7 +90,6 @@ export default function AddTeamPage() {
     }
 
     setIsLoading(true)
-
     try {
       const res = await fetch("/api/teams", {
         method: "POST",
@@ -157,9 +157,9 @@ export default function AddTeamPage() {
               </div>
             </CardContent>
             <CardFooter>
-              <Button 
-                onClick={handleCreateTeam} 
-                disabled={isLoading || !teamName.trim()} 
+              <Button
+                onClick={handleCreateTeam}
+                disabled={isLoading || !teamName.trim()}
                 className="w-full"
               >
                 {isLoading ? "Creating..." : "Create Team"}
@@ -185,6 +185,7 @@ export default function AddTeamPage() {
                       // Clear users list when search input is cleared
                       if (!e.target.value.trim()) {
                         setUsers([])
+                        setHasSearched(false)
                       }
                     }}
                     onKeyDown={(e) => {
@@ -229,7 +230,9 @@ export default function AddTeamPage() {
                       </div>
                     ) : (
                       <div className="py-8 text-center text-muted-foreground">
-                        {searchInput.trim() ? "No users found" : "Type a name and press Enter to search"}
+                        {hasSearched
+                          ? "No users found"
+                          : "Type a name and press Enter to search"}
                       </div>
                     )}
                   </ScrollArea>

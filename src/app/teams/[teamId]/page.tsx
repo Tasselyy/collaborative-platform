@@ -67,6 +67,7 @@ export default function TeamDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [team, setTeam] = useState<Team | null>(null);
   const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [isDisbandConfirmOpen, setIsDisbandConfirmOpen] = useState(false);
   const [memberToRemove, setMemberToRemove] = useState<string | null>(null);
   const { data: session } = authClient.useSession();
 
@@ -78,7 +79,7 @@ export default function TeamDetailPage() {
       setIsLoading(true);
       try {
         const response = await fetch(`/api/teams/${teamId}`);
-        
+
 
         if (!response.ok) {
           throw new Error(`Failed to fetch team: ${response.status}`);
@@ -95,6 +96,32 @@ export default function TeamDetailPage() {
 
     fetchTeam();
   }, [teamId]);
+
+  const confirmDisbandTeam = async () => {
+    if (!team) return;
+
+    try {
+      const response = await fetch(`/api/teams/${team.id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to disband team: ${response.status}`);
+      }
+
+      toast.success("Team disbanded", {
+        description: "The team has been successfully disbanded."
+      });
+
+      // Redirect to dashboard
+      router.push("/dashboard");
+    } catch (error) {
+      console.error("Error disbanding team:", error);
+      toast.error("Failed to disband team");
+    } finally {
+      setIsDisbandConfirmOpen(false);
+    }
+  }
 
   const handleRemoveMember = (memberId: string) => {
     setMemberToRemove(memberId);
@@ -211,14 +238,6 @@ export default function TeamDetailPage() {
                 </p>
               </div>
             </CardContent>
-            {/* {isUserAdmin && (
-              <CardFooter className="flex justify-between border-t pt-4">
-                <Button variant="outline" onClick={() => router.push(`/teams/${team.id}/settings`)}>
-                  <Settings className="h-4 w-4 mr-2" />
-                  Settings
-                </Button>
-              </CardFooter>
-            )} */}
           </Card>
         </div>
 
@@ -228,13 +247,23 @@ export default function TeamDetailPage() {
               <div className="flex items-center justify-between">
                 <CardTitle>Team Members</CardTitle>
                 {isUserAdmin && (
-                  <Button
-                    size="sm"
-                    onClick={() => router.push(`/teams/${team.id}/add-members`)}
-                  >
-                    <UserPlus className="h-4 w-4 mr-2" />
-                    Add Members
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      size="sm"
+                      onClick={() => router.push(`/teams/${team.id}/add-members`)}
+                    >
+                      <UserPlus className="h-4 w-4 mr-2" />
+                      Add Members
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => setIsDisbandConfirmOpen(true)}
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Disband Team
+                    </Button>
+                  </div>
                 )}
               </div>
               <CardDescription>
@@ -327,6 +356,26 @@ export default function TeamDetailPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+      <Dialog open={isDisbandConfirmOpen} onOpenChange={setIsDisbandConfirmOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Disband Team</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to disband this team? This will permanently remove the team
+              and revoke access for all members. This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsDisbandConfirmOpen(false)}>
+              Cancel
+            </Button>
+            <Button variant="destructive" onClick={confirmDisbandTeam}>
+              Disband Team
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
+
   )
 }

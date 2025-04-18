@@ -2,6 +2,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { addTeamMember } from '@/lib/services/team.service';
 import { TeamRole, Prisma} from '@prisma/client';
+import { requireTeamOwner } from '@/lib/services/auth.service';
+
 
 interface AddMembersRequest {
   members: {
@@ -20,12 +22,20 @@ export async function POST(
   routeParams: RouteParams
 ) {
   try {
+
     const { teamId } = await routeParams.params;
+    // Check authorization
+    const auth = await requireTeamOwner(request.headers, teamId);
+    
+    if (!auth.success) {
+      return auth.error;
+    }
+    console.log(`Team owner ${auth.userId} performing action`);
 
     if (!teamId) {
       return NextResponse.json({ error: 'Team ID is required' }, { status: 400 });
     }
-
+    console.log(`Team owner ${auth.userId} performing action`);
     const body: AddMembersRequest = await request.json();
 
     if (!body.members || !Array.isArray(body.members) || body.members.length === 0) {
