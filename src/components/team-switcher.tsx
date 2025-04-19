@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/sidebar"
 import { useTeams, Team } from "@/hooks/use-teams"
 import { Skeleton } from "@/components/ui/skeleton"
-
+import { useTeam } from "@/context/TeamContext";
 // Function to get an icon based on the team name
 function getTeamIcon(teamName: string): React.ElementType {
   // Simple logic to assign an icon based on the first letter of the team name
@@ -36,8 +36,8 @@ export function TeamSwitcher() {
   const router = useRouter()
   const { isMobile } = useSidebar()
   const { teams, loading, error } = useTeams()
-  const [activeTeam, setActiveTeam] = React.useState<Team | null>(null)
-
+  const { activeTeam, setActiveTeam } = useTeam();
+  
   // Set the first team as active when teams are loaded
   React.useEffect(() => {
     if (teams.length > 0 && !activeTeam) {
