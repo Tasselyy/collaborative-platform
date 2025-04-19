@@ -5,18 +5,8 @@ import {
   ColumnDef,
   useReactTable,
   getCoreRowModel,
-  getSortedRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  SortingState,
-  ColumnFiltersState,
-  VisibilityState,
   flexRender,
 } from "@tanstack/react-table";
-import { ArrowUpDown } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -25,21 +15,24 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useEffect,useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { ArrowUpDown } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useTeam } from "@/context/TeamContext";
-// Define the type for a dataset record.
+import { authClient } from "@/lib/auth-client";
+
 export type DatasetRecord = {
   id: string;
   name: string;
   description: string;
-  createdAt: string; // upload time as ISO string
-  team: string;      // team name, empty if none
+  createdAt: string;
+  team: string;
   visibility: "PRIVATE" | "PUBLIC" | "TEAM";
   visualizations: number;
   owner: string;
 };
 
-// Define the columns for the table.
 export const columns: ColumnDef<DatasetRecord>[] = [
   {
     accessorKey: "name",
@@ -64,13 +57,10 @@ export const columns: ColumnDef<DatasetRecord>[] = [
         Upload Time <ArrowUpDown className="ml-1 h-4 w-4" />
       </Button>
     ),
-    cell: ({ row }) => {
-      const date = new Date(row.getValue("createdAt") as string);
-      return date.toLocaleString();
-    },
-    sortingFn: (rowA, rowB) =>
-      new Date(rowA.getValue("createdAt") as string).getTime() -
-      new Date(rowB.getValue("createdAt") as string).getTime(),
+    cell: ({ row }) => new Date(row.getValue("createdAt")).toLocaleString(),
+    sortingFn: (a, b) =>
+      new Date(a.getValue("createdAt")).getTime() -
+      new Date(b.getValue("createdAt")).getTime(),
   },
   {
     accessorKey: "team",
@@ -94,127 +84,73 @@ export const columns: ColumnDef<DatasetRecord>[] = [
   },
 ];
 
-export function DataTable() {
-  // ADD active context to our table view.
-  const { activeTeam } = useTeam();
-  const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] =
-    React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({});
-  const [rowSelection, setRowSelection] = React.useState({});
-  const [data, setData] = useState<DatasetRecord[]>([]);
-
-  useEffect(() => {
-    fetch("/api/dataset")
-      .then(res => res.json())
-      .then(setData)
-      // .finally(() => setLoading(false))
-  }, [])
-
+function DatasetSection({ title, data }: { title: string; data: DatasetRecord[] }) {
   const table = useReactTable({
     data,
     columns,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
-    onRowSelectionChange: setRowSelection,
     getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-    },
   });
 
+  if (!data.length) return null;
+
   return (
-    <div className="w-full">
-      {/* Selected Team Display */}
-      <div className="mb-4 text-sm text-muted-foreground">
-        {activeTeam
-          ? `Currently viewing: ${activeTeam.name} (${activeTeam.id})`
-          : "No team selected"}
-      </div>
-      {/* Filter input for team column */}
-      <div className="flex items-center py-4">
-        <Input
-          placeholder="Filter team..."
-          value={(table.getColumn("team")?.getFilterValue() as string) ?? ""}
-          onChange={(e) =>
-            table.getColumn("team")?.setFilterValue(e.target.value)
-          }
-          className="max-w-sm"
-        />
-      </div>
-      {/* Data Table */}
+    <div className="mb-10">
+      <h2 className="text-lg font-semibold mb-3">{title}</h2>
       <div className="rounded-md border">
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
+            {table.getHeaderGroups().map((group) => (
+              <TableRow key={group.id}>
+                {group.headers.map((header) => (
                   <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
-                      )}
+                    {flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 ))}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  No results.
-                </TableCell>
+            {table.getRowModel().rows.map((row) => (
+              <TableRow key={row.id}>
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
+                ))}
               </TableRow>
-            )}
+            ))}
           </TableBody>
         </Table>
       </div>
-      {/* Pagination Controls */}
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredRowModel().rows.length} row(s)
-        </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
-      </div>
+    </div>
+  );
+}
+
+export function DataTable() {
+  const { activeTeam } = useTeam();
+  const { data: session } = authClient.useSession();
+  const currentUser = session?.user?.name ?? "";
+  const [datasets, setDatasets] = useState<DatasetRecord[]>([]);
+
+  useEffect(() => {
+    const url = activeTeam?.id ? `/api/dataset?teamId=${activeTeam.id}` : "/api/dataset";
+    fetch(url)
+      .then((res) => res.json())
+      .then(setDatasets);
+  }, [activeTeam]);
+
+  // Divide into three sections
+  const publicData = datasets.filter((d) => d.visibility === "PUBLIC");
+  const privateData = datasets.filter(
+    (d) => d.visibility === "PRIVATE" && d.owner === currentUser
+  );
+  const teamData = datasets.filter((d) => d.visibility === "TEAM");
+
+  return (
+    <div className="w-full">
+      <DatasetSection title="Public Datasets" data={publicData} />
+      <DatasetSection title={`Private Datasets (owned by ${currentUser})`} data={privateData} />
+      <DatasetSection title="Team Datasets" data={teamData} />
     </div>
   );
 }
