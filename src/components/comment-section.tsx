@@ -66,6 +66,8 @@ export default function CommentSection({ visualizationId, currentUserId }: Comme
       const res = await fetch(`/api/comments/${commentId}`, {
         method: "DELETE",
       });
+	  console.log(commentId)
+
 
       if (res.ok) {
         setComments((prev) => prev.filter((comment) => comment.id !== commentId));
@@ -100,3 +102,4 @@ export default function CommentSection({ visualizationId, currentUserId }: Comme
     </div>
   );
 }
+

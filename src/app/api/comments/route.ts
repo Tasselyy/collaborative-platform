@@ -8,41 +8,42 @@ export async function GET(request: Request) {
   const vizId = searchParams.get("vizId");
 
   if (!vizId) {
-    return NextResponse.json({ error: "Missing vizId parameter" }, { status: 400 });
+	return NextResponse.json({ error: "Missing vizId parameter" }, { status: 400 });
   }
   try {
-    const comments = await prisma.comment.findMany({
-      where: { vizId },
-      include: { author: true }, // Include author details if needed
-      orderBy: { createdAt: "desc" },
-    });
-    return NextResponse.json(comments);
+	const comments = await prisma.comment.findMany({
+	  where: { vizId },
+	  include: { author: true }, // Include author details if needed
+	  orderBy: { createdAt: "desc" },
+	});
+	return NextResponse.json(comments);
   } catch (error) {
-    return NextResponse.json({ error: "Error fetching comments" }, { status: 500 });
+	return NextResponse.json({ error: "Error fetching comments" }, { status: 500 });
+
   }
 }
 
 // POST: Add a new comment
 export async function POST(request: Request) {
   try {
-    const body = await request.json();
-    const { vizId, content, currentUserId } = body;
-    
-    const authorId = currentUserId;
-    if (!vizId || !content || !currentUserId) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
-    }
-    const comment = await prisma.comment.create({
-      data: {
-        vizId,
-        content,
-        authorId,
-      },
-      include: { author: true },
-    });
-    return NextResponse.json(comment);
+	const body = await request.json();
+	const { vizId, content, currentUserId } = body;
+	
+	const authorId = currentUserId;
+	if (!vizId || !content || !currentUserId) {
+	  return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+	}
+	const comment = await prisma.comment.create({
+	  data: {
+		vizId,
+		content,
+		authorId,
+	  },
+	  include: { author: true },
+	});
+	return NextResponse.json(comment);
   } catch (error) {
-    return NextResponse.json({ error: "Failed to create comment" }, { status: 500 });
+	return NextResponse.json({ error: "Failed to create comment" }, { status: 500 });
   }
 }
 
