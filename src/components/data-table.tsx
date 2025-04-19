@@ -26,7 +26,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useEffect,useState } from "react";
-
+import { useTeam } from "@/context/TeamContext";
 // Define the type for a dataset record.
 export type DatasetRecord = {
   id: string;
@@ -95,6 +95,8 @@ export const columns: ColumnDef<DatasetRecord>[] = [
 ];
 
 export function DataTable() {
+  // ADD active context to our table view.
+  const { activeTeam } = useTeam();
   const [sorting, setSorting] = React.useState<SortingState>([]);
   const [columnFilters, setColumnFilters] =
     React.useState<ColumnFiltersState>([]);
@@ -131,6 +133,12 @@ export function DataTable() {
 
   return (
     <div className="w-full">
+      {/* Selected Team Display */}
+      <div className="mb-4 text-sm text-muted-foreground">
+        {activeTeam
+          ? `Currently viewing: ${activeTeam.name} (${activeTeam.id})`
+          : "No team selected"}
+      </div>
       {/* Filter input for team column */}
       <div className="flex items-center py-4">
         <Input
