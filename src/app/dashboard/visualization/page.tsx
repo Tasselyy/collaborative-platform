@@ -246,7 +246,7 @@ export default function VisualizationPage() {
         const fileExt = dataset.fileName.split('.').pop()?.toLowerCase() || '';
         let parsedData: DataPoint[] = [];
     
-        const response = await fetch(`/api/datasets/${dataset.id}/file`);
+        const response = await fetch(`/api/dataset/${dataset.id}/file`);
         if (!response.ok) {
           throw new Error('Failed to fetch file');
         }
@@ -401,7 +401,7 @@ export default function VisualizationPage() {
     const fetchVisualizations = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch(`/api/datasets/${selectedDatasetId}/visualizations`);
+        const response = await fetch(`/api/dataset/${selectedDatasetId}/visualizations`);
         if (!response.ok) {
           setVisualizations([]);
           return;
@@ -449,7 +449,7 @@ const loadVisualization = async (vizId: string) => {
     if (!dataset || !dataset.fileName) throw new Error("Dataset not found");
 
     const fileExt = dataset.fileName.split('.').pop()?.toLowerCase() || '';
-    const response = await fetch(`/api/datasets/${dataset.id}/file`);
+    const response = await fetch(`/api/dataset/${dataset.id}/file`);
     if (!response.ok) throw new Error("Failed to fetch dataset file");
 
     let parsed: DataPoint[] = [];
@@ -492,7 +492,7 @@ const loadVisualization = async (vizId: string) => {
     if (selectedDatasetId) {
       const dataset = availableDatasets.find(ds => ds.id === selectedDatasetId);
       if (dataset) {
-        fetch(`/api/datasets/${dataset.id}/file`)
+        fetch(`/api/dataset/${dataset.id}/file`)
           .then(res => res.blob())
           .then(blob => blob.arrayBuffer())
           .then(async buffer => {
