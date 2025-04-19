@@ -19,6 +19,7 @@ export async function GET(request: Request) {
 	return NextResponse.json(comments);
   } catch (error) {
 	return NextResponse.json({ error: "Error fetching comments" }, { status: 500 });
+
   }
 }
 
@@ -45,3 +46,4 @@ export async function POST(request: Request) {
 	return NextResponse.json({ error: "Failed to create comment" }, { status: 500 });
   }
 }
+

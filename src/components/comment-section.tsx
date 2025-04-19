@@ -68,6 +68,7 @@ export default function CommentSection({ visualizationId, currentUserId }: Comme
       });
 	  console.log(commentId)
 
+
       if (res.ok) {
         setComments((prev) => prev.filter((comment) => comment.id !== commentId));
       } else {
@@ -101,3 +102,4 @@ export default function CommentSection({ visualizationId, currentUserId }: Comme
     </div>
   );
 }
+
