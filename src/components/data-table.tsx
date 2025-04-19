@@ -16,11 +16,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { ArrowUpDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTeam } from "@/context/TeamContext";
 import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 export type DatasetRecord = {
   id: string;
@@ -33,58 +33,119 @@ export type DatasetRecord = {
   owner: string;
 };
 
-export const columns: ColumnDef<DatasetRecord>[] = [
-  {
-    accessorKey: "name",
-    header: "Name",
-    cell: ({ row }) => row.getValue("name"),
-  },
-  {
-    accessorKey: "description",
-    header: "Description",
-    cell: ({ row }) => {
-      const desc = row.getValue("description") as string;
-      return desc.length > 50 ? desc.slice(0, 50) + "..." : desc;
-    },
-  },
-  {
-    accessorKey: "createdAt",
-    header: ({ column }) => (
-      <Button
-        variant="ghost"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-      >
-        Upload Time <ArrowUpDown className="ml-1 h-4 w-4" />
-      </Button>
-    ),
-    cell: ({ row }) => new Date(row.getValue("createdAt")).toLocaleString(),
-    sortingFn: (a, b) =>
-      new Date(a.getValue("createdAt")).getTime() -
-      new Date(b.getValue("createdAt")).getTime(),
-  },
-  {
-    accessorKey: "team",
-    header: "Team",
-    cell: ({ row }) => row.getValue("team") || "None",
-  },
-  {
-    accessorKey: "visibility",
-    header: "Visibility",
-    cell: ({ row }) => row.getValue("visibility"),
-  },
-  {
-    accessorKey: "visualizations",
-    header: "Visualizations",
-    cell: ({ row }) => row.getValue("visualizations"),
-  },
-  {
-    accessorKey: "owner",
-    header: "Owner",
-    cell: ({ row }) => row.getValue("owner"),
-  },
-];
+export function DataTable() {
+  const { activeTeam } = useTeam();
+  const { data: session } = authClient.useSession();
+  const currentUser = session?.user?.name ?? "";
+  const [datasets, setDatasets] = useState<DatasetRecord[]>([]);
+  const router = useRouter();
 
-function DatasetSection({ title, data }: { title: string; data: DatasetRecord[] }) {
+  useEffect(() => {
+    const url = activeTeam?.id ? `/api/dataset?teamId=${activeTeam.id}` : "/api/dataset";
+    fetch(url)
+      .then((res) => res.json())
+      .then(setDatasets);
+  }, [activeTeam]);
+
+  // Handles row click and navigates to metadata page
+  const handleRowClick = (dataset: DatasetRecord) => {
+    router.push(`/dashboard/metadata/${dataset.id}`);
+  };
+
+  // Column definitions with clickable rows
+  const columns: ColumnDef<DatasetRecord>[] = [
+    {
+      accessorKey: "name",
+      header: "Name",
+      cell: ({ row }) => row.getValue("name"),
+    },
+    {
+      accessorKey: "description",
+      header: "Description",
+      cell: ({ row }) => {
+        const desc = row.getValue("description") as string;
+        return desc.length > 50 ? desc.slice(0, 50) + "..." : desc;
+      },
+    },
+    {
+      accessorKey: "createdAt",
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Upload Time <ArrowUpDown className="ml-1 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => new Date(row.getValue("createdAt")).toLocaleString(),
+      sortingFn: (a, b) =>
+        new Date(a.getValue("createdAt")).getTime() -
+        new Date(b.getValue("createdAt")).getTime(),
+    },
+    {
+      accessorKey: "team",
+      header: "Team",
+      cell: ({ row }) => row.getValue("team") || "None",
+    },
+    {
+      accessorKey: "visibility",
+      header: "Visibility",
+      cell: ({ row }) => row.getValue("visibility"),
+    },
+    {
+      accessorKey: "visualizations",
+      header: "Visualizations",
+      cell: ({ row }) => row.getValue("visualizations"),
+    },
+    {
+      accessorKey: "owner",
+      header: "Owner",
+      cell: ({ row }) => row.getValue("owner"),
+    },
+  ];
+
+  // Divide into three sections
+  const publicData = datasets.filter((d) => d.visibility === "PUBLIC");
+  const privateData = datasets.filter(
+    (d) => d.visibility === "PRIVATE" && d.owner === currentUser
+  );
+  const teamData = datasets.filter((d) => d.visibility === "TEAM");
+
+  return (
+    <div className="w-full">
+      <DatasetSection 
+        title="Public Datasets" 
+        data={publicData} 
+        columns={columns}
+        onRowClick={handleRowClick}
+      />
+      <DatasetSection 
+        title={`Private Datasets (owned by ${currentUser})`} 
+        data={privateData} 
+        columns={columns}
+        onRowClick={handleRowClick}
+      />
+      <DatasetSection 
+        title="Team Datasets" 
+        data={teamData} 
+        columns={columns}
+        onRowClick={handleRowClick}
+      />
+    </div>
+  );
+}
+
+function DatasetSection({ 
+  title, 
+  data,
+  columns,
+  onRowClick
+}: { 
+  title: string; 
+  data: DatasetRecord[];
+  columns: ColumnDef<DatasetRecord>[];
+  onRowClick: (dataset: DatasetRecord) => void;
+}) {
   const table = useReactTable({
     data,
     columns,
@@ -111,7 +172,11 @@ function DatasetSection({ title, data }: { title: string; data: DatasetRecord[] 
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
+              <TableRow 
+                key={row.id} 
+                onClick={() => onRowClick(row.original)}
+                className="cursor-pointer hover:bg-gray-100"
+              >
                 {row.getVisibleCells().map((cell) => (
                   <TableCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
@@ -122,35 +187,6 @@ function DatasetSection({ title, data }: { title: string; data: DatasetRecord[] 
           </TableBody>
         </Table>
       </div>
-    </div>
-  );
-}
-
-export function DataTable() {
-  const { activeTeam } = useTeam();
-  const { data: session } = authClient.useSession();
-  const currentUser = session?.user?.name ?? "";
-  const [datasets, setDatasets] = useState<DatasetRecord[]>([]);
-
-  useEffect(() => {
-    const url = activeTeam?.id ? `/api/dataset?teamId=${activeTeam.id}` : "/api/dataset";
-    fetch(url)
-      .then((res) => res.json())
-      .then(setDatasets);
-  }, [activeTeam]);
-
-  // Divide into three sections
-  const publicData = datasets.filter((d) => d.visibility === "PUBLIC");
-  const privateData = datasets.filter(
-    (d) => d.visibility === "PRIVATE" && d.owner === currentUser
-  );
-  const teamData = datasets.filter((d) => d.visibility === "TEAM");
-
-  return (
-    <div className="w-full">
-      <DatasetSection title="Public Datasets" data={publicData} />
-      <DatasetSection title={`Private Datasets (owned by ${currentUser})`} data={privateData} />
-      <DatasetSection title="Team Datasets" data={teamData} />
     </div>
   );
 }
