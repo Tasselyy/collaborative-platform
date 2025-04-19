@@ -7,16 +7,15 @@ import { Textarea } from "@/components/ui/textarea"
 import { useState } from "react"
 import { authClient } from "@/lib/auth-client"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-
+import { useTeam } from '@/context/TeamContext';
 export default function UploadPage() {
     const [file, setFile] = useState<File>()
     const [message, setMessage] = useState('');
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
-    const [teamId, setTeamId] = useState('')
     const [visibility, setVisibility] = useState('')
     const { data: session, } = authClient.useSession()
-
+    const { activeTeam } = useTeam();
     const handleUpload = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         if (!file || !session) return
@@ -58,7 +57,7 @@ export default function UploadPage() {
                     visibility,
                     fileName,
                     fileUrl,
-                    // teamId
+                    teamId: visibility === "TEAM" ? activeTeam?.id : undefined,
                 })
             })
 
@@ -103,23 +102,6 @@ export default function UploadPage() {
                         <Label htmlFor="description">Description</Label>
                         <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} />
                     </div>
-
-                    {/* Team */}
-                    {/* <div className="space-y-2">
-                        <Label>Team</Label>
-                        <Select onValueChange={setTeamId}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select a team" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="engineering">Engineering</SelectItem>
-                                <SelectItem value="design">Design</SelectItem>
-                                <SelectItem value="marketing">Marketing</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div> */}
-
-                    {/* Visibility */}
                     <div className="space-y-2">
                         <Label>Visibility</Label>
                         <Select onValueChange={setVisibility}>
@@ -133,6 +115,14 @@ export default function UploadPage() {
                             </SelectContent>
                         </Select>
                     </div>
+                    {visibility === "TEAM" && activeTeam && (
+                        <div className="space-y-2">
+                            <Label>Selected Team</Label>
+                            <p className="text-sm text-muted-foreground">
+                                <span className="font-medium">{activeTeam.name}</span>
+                            </p>
+                        </div>
+                    )}
                 </CardContent>
                 <CardFooter>
                     <Button size="lg" type="submit">Upload</Button>
