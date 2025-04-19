@@ -4,11 +4,11 @@ import React, { useState, useEffect } from "react";
 import CommentCard from "./comment-card";
 import AddCommentForm from "./add-comment-form";
 import { Comment } from "@/types/comment";
-import { authClient } from "@/lib/auth-client"
+import { authClient } from "@/lib/auth-client";
 
 interface CommentSectionProps {
   visualizationId: string;
-  currentUserId: string; // Logged-in user ID
+  currentUserId: string;
 }
 
 export default function CommentSection({ visualizationId, currentUserId }: CommentSectionProps) {
@@ -16,87 +16,70 @@ export default function CommentSection({ visualizationId, currentUserId }: Comme
   const [loading, setLoading] = useState(true);
   const { data: session } = authClient.useSession();
 
-  const fetchComments = async () => {
-    setLoading(true);
-    try {
-      
-      const res = await fetch(`/api/comments?vizId=${visualizationId}`);
-      if (res.ok) {
+  useEffect(() => {
+    const fetchComments = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch(`/api/comments?vizId=${visualizationId}`);
+        if (!res.ok) throw new Error("Failed to fetch comments");
         const data: Comment[] = await res.json();
         setComments(data);
-      } else {
-        console.error("Failed to fetch comments");
+      } catch (error) {
+        console.error("Error fetching comments:", error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      console.error("Error fetching comments:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
+    };
     fetchComments();
   }, [visualizationId]);
 
-  const handleAddComment = async (content: string) => {
+  const addComment = async (content: string) => {
     try {
       const res = await fetch("/api/comments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          vizId: visualizationId,
-          content,
-          currentUserId,
-        }),
+        body: JSON.stringify({ vizId: visualizationId, content, currentUserId }),
       });
-
-      if (res.ok) {
-        const newComment: Comment = await res.json();
-        setComments((prev) => [newComment, ...prev]);
-      } else {
-        console.error("Failed to add comment");
-      }
+      if (!res.ok) throw new Error("Failed to add comment");
+      const newComment: Comment = await res.json();
+      setComments((prev) => [newComment, ...prev]);
     } catch (error) {
       console.error("Error posting comment:", error);
     }
   };
 
-  const handleDeleteComment = async (commentId: string) => {
+  const deleteComment = async (commentId: string) => {
     try {
-      const res = await fetch(`/api/comments/${commentId}`, {
-        method: "DELETE",
-      });
-
-      if (res.ok) {
-        setComments((prev) => prev.filter((comment) => comment.id !== commentId));
-      } else {
-        console.error("Failed to delete comment");
-      }
+      const res = await fetch(`/api/comments/${commentId}`, { method: "DELETE" });
+      if (!res.ok) throw new Error("Failed to delete comment");
+      setComments((prev) => prev.filter((comment) => comment.id !== commentId));
     } catch (error) {
       console.error("Error deleting comment:", error);
     }
   };
 
   return (
-    <div className="mt-6">
+    <section className="mt-6 border rounded-lg p-4 bg-gray-50 shadow">
       <h3 className="text-xl font-bold mb-4">Comments</h3>
-      <AddCommentForm visualizationId={visualizationId} currentUserId={currentUserId} onSubmit={handleAddComment} /> {/* Adjust submission logic */}
+      <AddCommentForm visualizationId={visualizationId} currentUserId={currentUserId} onSubmit={addComment} />
       <div className="mt-4">
         {loading ? (
           <p className="text-gray-600">Loading comments...</p>
         ) : comments.length === 0 ? (
           <p className="text-gray-600">No comments yet. Be the first to comment!</p>
         ) : (
-          comments.map((comment) => (
-            <CommentCard
-              key={comment.id}
-              comment={comment}
-              currentUserId={currentUserId}
-              onDelete={handleDeleteComment}
-            />
-          ))
+          <div className="space-y-4">
+            {comments.map((comment) => (
+              <CommentCard
+                key={comment.id}
+                comment={comment}
+                currentUserId={currentUserId}
+                onDelete={deleteComment}
+              />
+            ))}
+          </div>
         )}
       </div>
-    </div>
+    </section>
   );
 }

@@ -1,55 +1,64 @@
-'use client'
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { Label } from "@/components/ui/label"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { useState } from "react"
-import { authClient } from "@/lib/auth-client"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+'use client';
+import { Card, CardContent, CardFooter } from '@/components/ui/card';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Textarea } from '@/components/ui/textarea';
+import { useState } from 'react';
+import { authClient } from '@/lib/auth-client';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
 
 export default function UploadPage() {
-    const [file, setFile] = useState<File>()
+    const [file, setFile] = useState<File>();
     const [message, setMessage] = useState('');
-    const [name, setName] = useState('')
-    const [description, setDescription] = useState('')
-    const [teamId, setTeamId] = useState('')
-    const [visibility, setVisibility] = useState('')
-    const { data: session, } = authClient.useSession()
+    const [name, setName] = useState('');
+    const [description, setDescription] = useState('');
+    const [teamId, setTeamId] = useState('');
+    const [visibility, setVisibility] = useState('');
+    const { data: session } = authClient.useSession();
 
     const handleUpload = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        if (!file || !session) return
+        e.preventDefault();
+        if (!file || !session) return;
 
         try {
-            const data = new FormData()
-            const ownerId = session?.user.id
-            const fileName = file.name
+            const data = new FormData();
+            const ownerId = session?.user.id;
+
             //add userId as prefix
             const newFileName = `${session.user.id}_${file.name}`;
-            const renamedFile = new File([file], newFileName, { type: file.type });
-            data.set('file', renamedFile)
+            const renamedFile = new File([file], newFileName, {
+                type: file.type,
+            });
+            const fileName = newFileName;
+            data.set('file', renamedFile);
 
             setMessage('Uploading...');
             const uploadRes = await fetch('/api/cloud-upload', {
                 method: 'POST',
-                body: data
-            })
+                body: data,
+            });
 
             // handle the upload error
             if (!uploadRes.ok) {
                 setMessage('❌ Upload failed.');
-                throw new Error(await uploadRes.text())
+                throw new Error(await uploadRes.text());
             }
 
-            const { url: fileUrl } = await uploadRes.json()
+            const { url: fileUrl } = await uploadRes.json();
             setMessage(`✅ File uploaded successfully!`);
             // setMessage(`✅ File uploaded successfully! url: ${result.url}`);
 
             const metadataRes = await fetch('/api/dataset', {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
                     name,
@@ -59,18 +68,17 @@ export default function UploadPage() {
                     fileName,
                     fileUrl,
                     // teamId
-                })
-            })
+                }),
+            });
 
-            if (!metadataRes.ok) throw new Error(await metadataRes.text())
+            if (!metadataRes.ok) throw new Error(await metadataRes.text());
 
-            setMessage(`✅ Dataset saved!`)
-        }
-        catch (e: any) {
+            setMessage(`✅ Dataset saved!`);
+        } catch (e: any) {
             // Handle errors here
-            console.error(e)
+            console.error(e);
         }
-    }
+    };
 
     return (
         <form onSubmit={handleUpload}>
@@ -79,15 +87,22 @@ export default function UploadPage() {
                     {/* File Upload */}
                     <div className="border-2 border-dashed border-gray-200 rounded-lg flex flex-col gap-1 p-6 items-center">
                         <FileIcon className="w-12 h-12" />
-                        <span className="text-sm font-medium text-gray-500">Drag and drop a file or click to browse</span>
-                        <span className="text-xs text-gray-500">CSV, JSON or Excel</span>
+                        <span className="text-sm font-medium text-gray-500">
+                            Drag and drop a file or click to browse
+                        </span>
+                        <span className="text-xs text-gray-500">
+                            CSV, JSON or Excel
+                        </span>
                     </div>
                     <div className="space-y-2 text-sm">
                         <Label htmlFor="file" className="text-sm font-medium">
                             File
                         </Label>
                         {/* only accpet CSV, JSON, Excel */}
-                        <Input id="file" type="file" placeholder="File"
+                        <Input
+                            id="file"
+                            type="file"
+                            placeholder="File"
                             accept=".csv,application/json,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel"
                             onChange={(e) => setFile(e.target.files?.[0])}
                         />
@@ -95,13 +110,21 @@ export default function UploadPage() {
                     {/* Name */}
                     <div className="space-y-2">
                         <Label htmlFor="name">Name</Label>
-                        <Input id="name" value={name} onChange={(e) => setName(e.target.value)} />
+                        <Input
+                            id="name"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        />
                     </div>
 
                     {/* Description */}
                     <div className="space-y-2">
                         <Label htmlFor="description">Description</Label>
-                        <Textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} />
+                        <Textarea
+                            id="description"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                        />
                     </div>
 
                     {/* Team */}
@@ -122,7 +145,7 @@ export default function UploadPage() {
                     {/* Visibility */}
                     <div className="space-y-2">
                         <Label>Visibility</Label>
-                        <Select onValueChange={setVisibility}>
+                        <Select onValueChange={setVisibility} required>
                             <SelectTrigger>
                                 <SelectValue placeholder="Select visibility" />
                             </SelectTrigger>
@@ -135,12 +158,16 @@ export default function UploadPage() {
                     </div>
                 </CardContent>
                 <CardFooter>
-                    <Button size="lg" type="submit">Upload</Button>
-                    {message && <p className="mt-2 text-sm text-blue-600">{message}</p>}
+                    <Button size="lg" type="submit">
+                        Upload
+                    </Button>
+                    {message && (
+                        <p className="mt-2 text-sm text-blue-600">{message}</p>
+                    )}
                 </CardFooter>
             </Card>
         </form>
-    )
+    );
 }
 
 function FileIcon(props: React.SVGProps<SVGSVGElement>) {
@@ -160,5 +187,5 @@ function FileIcon(props: React.SVGProps<SVGSVGElement>) {
             <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
             <path d="M14 2v4a2 2 0 0 0 2 2h4" />
         </svg>
-    )
+    );
 }

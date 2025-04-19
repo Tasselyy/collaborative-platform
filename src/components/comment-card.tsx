@@ -34,7 +34,7 @@ export default function CommentCard({ comment, currentUserId, onDelete }: Commen
       {isAuthor && (
         <CardFooter>
           <Button
-            variant="destructive"
+            variant="outline"
             size="sm"
             onClick={() => onDelete(comment.id)}
           >

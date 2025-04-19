@@ -8,7 +8,7 @@ export async function DELETE(
     request: Request,
     { params }: { params: { commentId: string } }
   ) {
-    const { commentId } = params;
+    const { commentId } = await params;
   
     if (!commentId) {
       return NextResponse.json({ error: "Missing commentId parameter" }, { status: 400 });
