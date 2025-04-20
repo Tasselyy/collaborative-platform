@@ -100,12 +100,15 @@ export default function MetadataPage() {
       <div className="flex items-baseline space-x-2">
       
         <h1 className="text-2xl font-bold">Dataset Metadata</h1>
-        <button 
-          className="text-sm text-black-600 hover:underline"
+        <Button 
+          variant="ghost" 
+          size="sm"
           onClick={() => router.push("/dashboard/dataTable")}
+          className="flex items-center space-x-1"
         >
-          [Back]
-        </button>
+        <ArrowLeft className="h-4 w-4" />
+        <span>Back</span>
+      </Button>
         
         {isOwner && !isEditing && (
           <Button 
