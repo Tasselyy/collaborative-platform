@@ -123,6 +123,14 @@ Our platform enables data scientists and teams to collaborate on datasets, visua
 - Export any chart as **PNG** or **JPG** using one-click export buttons.
 - Supports integration into reports or external presentations.
 
+### 👥 Team Collaboration & Management
+
+- Create and manage multiple **teams/workspaces**
+- Invite other users via **email-based search**
+- Assign **roles** (e.g., `MEMBER`, `OWNER`) within teams
+- Share datasets with teams using **TEAM visibility mode**
+- Disband or transfer team ownership (OWNER only)
+
 ---
 
 ### How We Meet the Project Requirements
