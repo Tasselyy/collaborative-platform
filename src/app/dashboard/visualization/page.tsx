@@ -952,3 +952,4 @@ const loadVisualization = async (vizId: string) => {
     </div>
     
   );
+}
