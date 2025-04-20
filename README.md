@@ -159,63 +159,131 @@ Our application meets **all core technical requirements** defined by the course:
 
 ### Signing Up and Logging In
 
-1. **Sign Up:**  
-   - Navigate to the "Sign Up" page.
-   - Enter your name, email, and password.
-   - Click the "Sign Up" button.
-   - A confirmation toast is displayed, and you are redirected to the dashboard.
-
-2. **Log In:**  
-   - Go to the "Login" page.
-   - Enter your registered email and password.
-   - Alternatively, choose to login with Github or Apple
-   - Click "Login" to access your dashboard.
+TODO
 
 ### Navigating the Dashboard
 TODO
 
 ---
 
-## Development Guide
+## Development and Deployment Guide
 
-### Environment Setup and Configuration
+### 🔐 Environment Variables and Configuration
+To run the application, create a `.env` file in the root directory by copying the example:
 
-1. **Clone the Repository:**
+```bash
+cp .env.example .env
+```
+Update the following environment variables:
+
+```env
+# Database
+DATABASE_URL=
+
+# Auth configuration
+BETTER_AUTH_SECRET=
+BETTER_AUTH_URL=
+
+# GitHub OAuth
+GITHUB_CLIENT_ID=
+GITHUB_CLIENT_SECRET=
+
+# Google OAuth
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+
+# Amazon S3 configuration
+MY_AWS_ACCESS_KEY=
+MY_AWS_SECRET_KEY=
+MY_AWS_REGION=
+```
+### Better Auth configuration
+💡 Set `BETTER_AUTH_URL` depending on your environment:  
+ - For **local development**, use: `http://localhost:3000`  
+- For **cloud deployment**, use your hosted domain (e.g., `https://your-app.com`)
+
+ 🔐 `BETTER_AUTH_SECRET` can be any strong, random string.  
+ You can:
+ - Generate one using the button on the [Better Auth Installation Docs](https://www.better-auth.com/docs/installation) under **"Set Environment Variables"**
+ - Or use a tool like `openssl`:
    ```bash
-   git clone TODO
-   cd collaborative-platform
+   openssl rand -base64 32
+   ```
+### 🔑 OAuth Provider Setup
+
+To enable GitHub and Google login, you need to register your application with each provider and configure the credentials accordingly.
+
+#### 🐙 GitHub OAuth App
+- Register here: [https://github.com/settings/developers](https://github.com/settings/developers)
+- Set the **Authorization callback URL** to:
+  ```
+  http://localhost:3000/api/auth/callback/github
+  ```
+  *(Replace with your production domain when deploying)*
+
+- 📘 Better Auth GitHub Docs:  
+  [https://www.better-auth.com/docs/authentication/github](https://www.better-auth.com/docs/authentication/github)
+
+---
+
+#### 🔍 Google OAuth 2.0
+- Create credentials here: [https://console.cloud.google.com/apis/credentials](https://console.cloud.google.com/apis/credentials)
+- Set the **Authorized redirect URI** to:
+  ```
+  http://localhost:3000/api/auth/callback/google
+  ```
+  *(Replace with your production domain when deploying)*
+
+- 📘 Better Auth Google Docs:  
+  [https://www.better-auth.com/docs/authentication/google](https://www.better-auth.com/docs/authentication/google)
+
+### Development Instructions
+
+1. **Install Dependencies**
+   ```bash
+   npm install
    ```
 
-2. **Install Dependencies:**
-    ```bash
-    npm install
-    ```
+2. **Initialize the Database**
+   Apply existing Prisma migrations and generate the client:
+   ```bash
+   npx prisma migrate dev
+   npx prisma generate
+   ```
 
-3. **Environment Variables:**
-   1. Create a .env file in the root directory and configure the following:
-      1. DATABASE_URL: PostgreSQL connection string
-      2. NEXT_PUBLIC_API_BASE_URL: Base url of the application
-      3. Secret for authentication tokens
-      4. Cloud storage credentials 
+   > Note: Do **not** use `--name`, as migrations already exist in the `prisma/migrations` folder.
 
-### Database Inilitalization
-1. **Prisma Setup:**
-Initialize Prisma and migrate the schema:
-    ``` bash
-    npx prisma migrate dev --name init
-    npx prisma generate
-    ```
+3. **Start the Development Server**
+   ```bash
+   npm run dev
+   ```
 
+   > The app should now be running at `http://localhost:3000`.
+### 🚀 Deployment Instructions
+1. **Install Dependencies**
+   ```bash
+   npm install
+   ```
+2. **Initial Setup Tasks**
+   ```bash
+   npm run setup
+   ```
+
+   > This script include Prisma migration and generation.
+
+3. **Build the Application**
+   ```bash
+   npm run build
+   ```
+
+4. **Start the Application**
+   ```bash
+   npm run start
+   ```
+    > ⚠️ You also need to bind port and interface according to your cloud deployment setup. Example:
+    HOST=0.0.0.0 PORT=3000 npm run start
 ### Cloud Storage Configuration
 TODO
-
-### Local Development and Testing
-1. **Run the Development Server:**
-    ```bash
-    npm run dev
-    ```
-2. **Testing:**
-   TODO
 
 ## Deployment Information
 TODO
