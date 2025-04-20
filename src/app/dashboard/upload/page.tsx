@@ -19,7 +19,6 @@ export default function UploadPage() {
     const handleUpload = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         if (!file || !session) return
-
         try {
             const data = new FormData()
             const ownerId = session?.user.id
@@ -125,8 +124,28 @@ export default function UploadPage() {
                     )}
                 </CardContent>
                 <CardFooter>
-                    <Button size="lg" type="submit">Upload</Button>
-                    {message && <p className="mt-2 text-sm text-blue-600">{message}</p>}
+                    <Button size="lg" type="submit" disabled={
+                        !file || !name || !visibility || (visibility === "TEAM" && !activeTeam)
+                    }>
+                        Upload
+                    </Button>
+                    {/* Show field warning only if disabled */}
+                    {(!file || !name || !visibility || (visibility === "TEAM" && !activeTeam)) && (
+                        <p className="text-sm text-muted-foreground ml-1">
+                            {!file || !name || !visibility
+                                ? "Please fill out all required fields to upload."
+                                : visibility === "TEAM" && !activeTeam
+                                    ? "You must create or select a team to use Team visibility."
+                                    : ""}
+                        </p>
+                    )}
+
+                    {/* Upload status message */}
+                    {message && (
+                        <p className="text-sm text-blue-600 ml-1">
+                            {message}
+                        </p>
+                    )}
                 </CardFooter>
             </Card>
         </form>
