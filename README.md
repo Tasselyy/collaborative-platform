@@ -151,7 +151,23 @@ Our application meets **all core technical requirements** defined by the course:
   Global `TeamContext` shares active team across pages (e.g., upload, metadata, visualizations).
 
 
+---
 
+## 📘 API Documentation
+
+Our project provides a well-structured and fully documented RESTful API to support all core features of the Collaborative Data Analysis Platform.
+
+The API is organized into several logical modules:
+
+- **Authentication:** Sign in/out, session handling, and OAuth login.
+- **Dataset Management:** Upload, list, view, and update dataset metadata and files.
+- **Visualizations:** Create and retrieve chart visualizations linked to datasets.
+- **Comments:** Comment on visualizations for team-based collaboration.
+- **Team Management:** Create teams, add/remove members, and assign roles.
+- **Cloud Storage:** Secure file uploads and downloads via S3 signed URLs.
+- **User Search:** Search users to invite to teams or projects.
+
+👉 For full details including request formats, parameters, response examples, and error codes, see: [`docs/API.md`](https://github.com/Tasselyy/collaborative-platform/blob/table_view/docs/API.md)
 
 ---
 
