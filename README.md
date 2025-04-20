@@ -22,25 +22,27 @@
 
 ## Motivation
 
-Companies often struggle with data analysis because data scientists typically work in isolation using different tools. This fragmentation makes sharing insights difficult and slows down decision-making. Our project addresses these challenges by offering a unified, web-based platform where data scientists and analysts can upload datasets, visualize data, and collaborate in real time. This integrated approach saves time, improves teamwork, enhances data security, and supports better decision-making.
+In collaborative data science projects, teams often struggle with scattered tools, inconsistent dataset versions, and inefficient communication. While there are existing platforms, many are either too costly, overly complex, or lack the flexibility needed for educational or small-team environments. This motivated us to build a streamlined, web-based platform that allows data scientists to upload datasets, create visualizations, and collaborate in real-time within a centralized workspace.
+
+This project not only addresses a practical need in data analysis workflows but also allows us to gain hands-on experience with modern full-stack development tools, such as Next.js, PostgreSQL, and cloud storage, in a realistic and technically challenging context.
 
 ---
 
 ## Objectives
 
-The Collaborative Data Analysis Platform aims to achieve the following objectives:
+Our goal is to develop a full-stack web application that empowers teams to collaborate on data analysis efficiently. The main objectives include:
 
-- **Streamline Data Collaboration:**  
-  Provide a single, unified environment where teams can effortlessly upload, manage, and analyze datasets. By centralizing these processes, the platform eliminates the need for multiple disparate tools, reducing friction and saving time for data scientists and analysts.
+- Implement user authentication and team-based workspace management to support secure and organized collaboration.
 
-- **Enhance User Experience:**  
-  Offer an intuitive, responsive interface that supports real-time collaboration and interactive data exploration. The design prioritizes ease-of-use, enabling both technical and non-technical users to navigate the platform, visualize complex data, and extract actionable insights quickly.
+- Enable dataset upload and preview with support for CSV, Excel, and JSON formats.
 
-- **Integrate Key Functionalities:**  
-  Combine essential features—user authentication, dataset management, interactive data visualization, and real-time commenting—into one cohesive application. This integration ensures that users have access to all the tools they need without switching contexts, resulting in a smoother workflow from data ingestion to insight generation.
+- Provide data visualization tools using libraries like Chart.js, along with interactive table views.
 
-- **Ensure Data Security and Scalability:**  
-  Leverage robust technologies such as PostgreSQL for secure, structured data storage and cloud storage solutions (e.g., AWS S3) for scalable file management. The platform is designed to maintain data integrity and support future growth, ensuring that as datasets and user numbers increase, the system remains reliable and secure.
+- Support sharing permissions, commenting on visualizations, and metadata management to enhance collaboration and clarity.
+
+- Ensure a responsive and intuitive user interface using Next.js, Tailwind CSS, and shadcn/ui, backed by a robust PostgreSQL database and cloud file storage.
+
+By fulfilling these objectives, we aim to build a platform that not only meets the course’s technical requirements but also delivers real-world value to users.
 
 
 ---
