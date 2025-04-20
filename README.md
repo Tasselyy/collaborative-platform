@@ -280,7 +280,7 @@ To enable GitHub and Google login, you need to register your application with ea
    ```bash
    npm run start
    ```
-    > ⚠️ You also need to bind port and interface according to your cloud deployment setup. Example:
+    > ⚠️ You also need to bind port and interface according to your deployment setup. Example:
     HOST=0.0.0.0 PORT=3000 npm run start
 ### Cloud Storage Configuration
 TODO
