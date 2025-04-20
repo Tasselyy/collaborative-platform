@@ -5,7 +5,8 @@ import { useParams, useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { 
+import { toast } from "sonner"
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -17,22 +18,29 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { ArrowLeft, Save } from "lucide-react";
 import { DatasetRecord } from "@/components/data-table";
+import { useTeam } from '@/context/TeamContext';
+type DatasetFormData = {
+  name?: string;
+  description?: string;
+  visibility?: "PRIVATE" | "PUBLIC" | "TEAM";
+  teamId?: string | null;
+};
 
 export default function MetadataPage() {
   const params = useParams();
   const router = useRouter();
   const { data: session } = authClient.useSession();
   const currentUser = session?.user?.name ?? "";
-  
+
   const [dataset, setDataset] = useState<DatasetRecord | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState<Partial<DatasetRecord>>({});
+  const [formData, setFormData] = useState<DatasetFormData>({});
   const [isSaving, setIsSaving] = useState(false);
-
+  const { activeTeam } = useTeam();
   // Check if current user is the owner of the dataset
   const isOwner = dataset?.owner === currentUser;
-  
+
   useEffect(() => {
     // Fetch dataset details
     if (params.id) {
@@ -62,7 +70,21 @@ export default function MetadataPage() {
 
   const handleSave = async () => {
     if (!dataset?.id) return;
-    
+  
+    // Enforce logic for TEAM visibility
+    if (formData.visibility === "TEAM") {
+      if (!activeTeam) {
+        toast.error("No active team selected. You cannot save with TEAM visibility.");
+        return;
+      }
+  
+      // ✅ Attach current team
+      formData.teamId = activeTeam.id;
+    } else {
+      // ✅ Clear any stale team ID
+      formData.teamId = null;
+    }
+  
     setIsSaving(true);
     try {
       const response = await fetch(`/api/dataset/${dataset.id}`, {
@@ -72,7 +94,7 @@ export default function MetadataPage() {
         },
         body: JSON.stringify(formData),
       });
-      
+  
       if (response.ok) {
         const updatedData = await response.json();
         setDataset(updatedData);
@@ -98,31 +120,31 @@ export default function MetadataPage() {
   return (
     <div className="container mx-auto py-6 px-4">
       <div className="flex items-baseline space-x-2">
-      
+
         <h1 className="text-2xl font-bold">Dataset Metadata</h1>
-        <Button 
-          variant="ghost" 
+        <Button
+          variant="ghost"
           size="sm"
           onClick={() => router.push("/dashboard/dataTable")}
           className="flex items-center space-x-1"
         >
-        <ArrowLeft className="h-4 w-4" />
-        <span>Back</span>
-      </Button>
-        
+          <ArrowLeft className="h-4 w-4" />
+          <span>Back</span>
+        </Button>
+
         {isOwner && !isEditing && (
-          <Button 
-            className="ml-auto" 
+          <Button
+            className="ml-auto"
             onClick={() => setIsEditing(true)}
           >
             Edit Metadata
           </Button>
         )}
-        
+
         {isEditing && (
           <div className="ml-auto space-x-2">
-            <Button 
-              variant="outline" 
+            <Button
+              variant="outline"
               onClick={() => {
                 setIsEditing(false);
                 setFormData(dataset);
@@ -130,7 +152,7 @@ export default function MetadataPage() {
             >
               Cancel
             </Button>
-            <Button 
+            <Button
               onClick={handleSave}
               disabled={isSaving}
             >
@@ -162,25 +184,34 @@ export default function MetadataPage() {
                     onChange={handleInputChange}
                   />
                 </div>
-                
                 <div className="space-y-2">
                   <Label htmlFor="visibility">Visibility</Label>
-                  <Select 
-                    value={formData.visibility || ""} 
-                    onValueChange={(value) => handleSelectChange("visibility", value)}
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select visibility" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="PRIVATE">Private</SelectItem>
-                      <SelectItem value="PUBLIC">Public</SelectItem>
-                      <SelectItem value="TEAM">Team</SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="flex items-center gap-4">
+                    <Select
+                      value={formData.visibility || ""}
+                      onValueChange={(value) => handleSelectChange("visibility", value)}
+                    >
+                      <SelectTrigger className="w-[160px]">
+                        <SelectValue placeholder="Select visibility" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="PRIVATE">Private</SelectItem>
+                        <SelectItem value="PUBLIC">Public</SelectItem>
+                        <SelectItem value="TEAM">Team</SelectItem>
+                      </SelectContent>
+                    </Select>
+
+                    {formData.visibility === "TEAM" && activeTeam && (
+                      <div className="space-y-0.5">
+                        <Label className="text-sm text-muted-foreground">Selected Team</Label>
+                        <p className="text-sm font-medium">{activeTeam.name}</p>
+                      </div>
+                    )}
+                  </div>
                 </div>
+
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="description">Description</Label>
                 <Textarea
@@ -200,33 +231,33 @@ export default function MetadataPage() {
                   <h3 className="text-sm font-medium text-gray-500">Name</h3>
                   <p className="mt-1">{dataset.name}</p>
                 </div>
-                
+
                 <div>
                   <h3 className="text-sm font-medium text-gray-500">Visibility</h3>
                   <p className="mt-1">{dataset.visibility}</p>
                 </div>
-                
+
                 <div>
                   <h3 className="text-sm font-medium text-gray-500">Created At</h3>
                   <p className="mt-1">{new Date(dataset.createdAt).toLocaleString()}</p>
                 </div>
-                
+
                 <div>
                   <h3 className="text-sm font-medium text-gray-500">Owner</h3>
                   <p className="mt-1">{dataset.owner}</p>
                 </div>
-                
+
                 <div>
                   <h3 className="text-sm font-medium text-gray-500">Team</h3>
                   <p className="mt-1">{dataset.team || "None"}</p>
                 </div>
-                
+
                 <div>
                   <h3 className="text-sm font-medium text-gray-500">Visualizations</h3>
                   <p className="mt-1">{dataset.visualizations}</p>
                 </div>
               </div>
-              
+
               <div>
                 <h3 className="text-sm font-medium text-gray-500">Description</h3>
                 <p className="mt-1 whitespace-pre-wrap">{dataset.description}</p>

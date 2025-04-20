@@ -52,7 +52,7 @@ export async function GET(
       createdAt: dataset.createdAt.toISOString(),
       team: dataset.team?.name || null,
       visibility: dataset.visibility,
-      visualizations: dataset.visualization?.length || 0,
+      visualizations: dataset.visualizations?.length || 0,
       owner: dataset.owner?.name || ""
     };
     
@@ -71,83 +71,79 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const session = await auth.api.getSession({ headers: await headers() });
     if (!session) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const {id} = await params;
+    const { id } = await params;
 
     const dataset = await prisma.dataset.findUnique({
-      where: { id: id },
-      include: {
-        team: true,
-        owner: true
-      }
+      where: { id },
+      include: { owner: true },
     });
-  
+
     if (!dataset) {
-      return NextResponse.json(
-        { error: "Dataset not found" },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: "Dataset not found" }, { status: 404 });
     }
-    
 
-    const currentUserId = session.user?.id;
- 
-    if (dataset.ownerId !== currentUserId) {
-      return NextResponse.json(
-        { error: "You don't have permission to edit this dataset" },
-        { status: 403 }
-      );
+    if (dataset.ownerId !== session.user?.id) {
+      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
-    
+
     const updates = await request.json();
-    const allowedFields = ["name", "description", "visibility"];
-    const sanitizedUpdates = Object.keys(updates)
-      .filter(key => allowedFields.includes(key))
-      .reduce((obj, key) => {
-        obj[key] = updates[key];
-        return obj;
-      }, {} as Record<string, any>);
-    
 
-    const updatedDataset = await prisma.dataset.update({
-      where: { id: id },
-      data: sanitizedUpdates,
-      include: {
-        team: {
-          select: {
-            name: true
-          }
-        },
-        owner: {
-          select: {
-            name: true
-          }
-        }
+    // Ensure only these fields can be updated
+    const { name, description, visibility, teamId } = updates;
+
+    if (visibility === "TEAM") {
+      if (!teamId) {
+        return NextResponse.json(
+          { error: "teamId is required for TEAM visibility" },
+          { status: 400 }
+        );
       }
-    });
     
-  
-    const formattedUpdatedDataset = {
+      // ✅ Check if the team actually exists
+      const teamExists = await prisma.team.findUnique({
+        where: { id: teamId },
+        select: { id: true }, // only fetch id for efficiency
+      });
+    
+      if (!teamExists) {
+        return NextResponse.json(
+          { error: "The specified team does not exist" },
+          { status: 404 }
+        );
+      }
+    }
+    const updatedDataset = await prisma.dataset.update({
+      where: { id },
+      data: {
+        name,
+        description,
+        visibility,
+        teamId: visibility === "TEAM" ? teamId : null,
+      },
+      include: {
+        team: { select: { name: true } },
+        owner: { select: { name: true } },
+        _count: {
+          select: { visualizations: true }
+        }
+      },
+    });
+
+    return NextResponse.json({
       id: updatedDataset.id,
       name: updatedDataset.name,
       description: updatedDataset.description,
       createdAt: updatedDataset.createdAt.toISOString(),
       team: updatedDataset.team?.name || null,
       visibility: updatedDataset.visibility,
-      visualizations: updatedDataset.visualizations?.length || 0,
-      owner: updatedDataset.owner?.name || ""
-    };
-    
-    return NextResponse.json(formattedUpdatedDataset);
+      visualizations: updatedDataset._count.visualizations,
+      owner: updatedDataset.owner?.name || "",
+    });
   } catch (error) {
     console.error("Error updating dataset:", error);
     return NextResponse.json(
