@@ -41,7 +41,6 @@ export async function GET(
         method: 'GET',
         // Optional: timeout could be handled with AbortController
       });
-
       if (!response.ok) {
         throw new Error('Failed to fetch file from S3 or remote URL');
       }
