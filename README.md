@@ -1,10 +1,6 @@
 # Collaborative Data Analysis Platform Final Report
 
-## Team Information
-
-- **Feiyang Fan**  
-  - Student Number: 1005146913
-  - Email: feiyang.fan@mail.utoronto.ca
+## ✏️ Team Information
 
 - **Yifan Yang**  
   - Student Number: 1011797619  
@@ -17,10 +13,14 @@
 - **Yilin Huai**  
   - Student Number: 1001297036  
   - Email: yilin.huai@mail.utoronto.ca
+  
+- **Feiyang Fan**  
+  - Student Number: 1005146913
+  - Email: feiyang.fan@mail.utoronto.ca
 
 ---
 
-## Motivation
+## ⚡️ Motivation
 
 In collaborative data science projects, teams often struggle with scattered tools, inconsistent dataset versions, and inefficient communication. While there are existing platforms, many are either too costly, overly complex, or lack the flexibility needed for educational or small-team environments. This motivated us to build a streamlined, web-based platform that allows data scientists to upload datasets, create visualizations, and collaborate in real-time within a centralized workspace.
 
@@ -28,7 +28,7 @@ This project not only addresses a practical need in data analysis workflows but 
 
 ---
 
-## Objectives
+## 🎯 Objectives
 
 Our goal is to develop a full-stack web application that empowers teams to collaborate on data analysis efficiently. The main objectives include:
 
@@ -47,48 +47,110 @@ By fulfilling these objectives, we aim to build a platform that not only meets t
 
 ---
 
-## Technical Stack
+## 🛠️ Technical Stack
 
-- **Framework:** Next.js Full-Stack (App Router)
-- **Frontend:** React, Tailwind CSS, shadcn/ui (component library)
-- **Backend:** Next.js Server Components & API Routes
-- **Database:** PostgreSQL for metadata and user data
-- **Cloud Storage:** Integrated cloud storage solution for dataset files
-- **Authentication:** Custom authentication using better-auth
-- **Other Libraries:** Chart.js for data visualization, react-hook-form with Zod for form validation
+Our project follows the **Next.js Full-Stack Architecture**, utilizing **Next.js 15+ with the App Router** for both frontend and backend logic. We use **Server Components**, **API Routes**, and **Server Actions** for a seamless full-stack experience.
+
+### 📃 Frontend
+
+- **Framework**: [Next.js 15](https://nextjs.org/) with App Router (app directory structure)
+- **UI Library**: [React 19](https://react.dev/)
+- **Styling**: [Tailwind CSS 4](https://tailwindcss.com/) with utility-first styling
+- **Component Library**: [shadcn/ui](https://ui.shadcn.com/) and [Radix UI](https://www.radix-ui.com/) primitives for accessible, customizable UI components
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **Data Visualization**: [Chart.js](https://www.chartjs.org/) via `react-chartjs-2`, and `chartjs-plugin-datalabels` for enhanced charts
+- **Form Handling**: `react-hook-form` with schema validation via `zod`
+- **File Uploads**: [UploadThing](https://uploadthing.com/)
+- **State & Theme**: `next-themes` for dark/light theme toggling and `better-auth` for lightweight auth integration
+- **CSV/Excel Parsing**: `papaparse` and `xlsx` libraries
+
+### 📊 Backend
+
+- **Server Logic**: Next.js Server Components and API Routes
+- **Authentication**: [NextAuth.js v5](https://authjs.dev/)
+- **Database**: [PostgreSQL](https://www.postgresql.org/) with [Prisma ORM](https://www.prisma.io/)
+- **Cloud File Storage**: [AWS S3](https://aws.amazon.com/s3/) using `@aws-sdk/client-s3`, `presigned-post`, and `request-presigner`
+- **Password Hashing**: `bcryptjs`
+
+### 🔧 Development & Tooling
+
+- **Language**: TypeScript
+- **Linting**: ESLint with `eslint-config-next`
+- **ORM & DB Management**: Prisma with CLI tools and custom seed scripts
+- **Middleware**: Custom `middleware.ts` for request handling (e.g., route protection)
+- **Deployment**: Configured for modern deployment platforms like Vercel
+
+
 
 ---
 
-## Features
+## ✨ Features
 
-- **User Authentication & Team Workspace Management:**  
-  Secure login functionality, enabling users to create personal profiles and collaborate in team workspaces. Access control ensures that only authorized team members can view or modify shared datasets and visualizations.
+Our platform enables data scientists and teams to collaborate on datasets, visualize insights, and manage shared workspaces with ease.
 
-- **Dataset Upload & Management:**  
-  Support for uploading datasets in various formats—including CSV, JSON, and Excel—while automatically storing file metadata in PostgreSQL and the actual files in a cloud storage solution. This ensures reliable and scalable data handling.
+### 🔐 User Authentication & Team Management
+- Sign up, log in, and securely manage sessions.
+- Create teams, invite members, manage roles (owner/member).
+- Route protection via middleware to ensure secure access.
 
-- **Data Visualization:**  
-  Integration with libraries such as Chart.js enables users to create interactive and dynamic visualizations. Visualizations can be customized, exported as images, and embedded within the platform for easy sharing and presentation.
+### 📂 Dataset Upload & Storage
+- Upload datasets in **CSV**, **JSON**, or **Excel** formats.
+- Files are renamed for uniqueness and stored via **S3-compatible cloud storage**.
+- Metadata (name, description, visibility) is stored in **PostgreSQL**.
 
-- **Data Table View:**  
-  An intuitive, sortable, and filterable table interface allows users to explore datasets with ease. Users can quickly search and sort data, facilitating efficient analysis and decision-making.
+### 📊 Data Visualization
+- Build charts using **Chart.js**: bar, line, pie, radar, and bubble.
+- Customize chart title, legend, animations, and appearance.
+- Edit data as raw JSON and instantly update charts.
 
-- **Dataset Metadata Management:**  
-  Comprehensive metadata management ensures that each dataset’s details (such as creation date, file type, and associated tags) are tracked in the PostgreSQL database, making it easy to search, filter, and organize datasets.
+### 📁 Data Table View
+- Preview datasets in a clean, sortable, filterable table.
+- Helps users quickly inspect uploaded data before visualizing.
 
-- **Sharing Permissions:**  
-  Flexible permission settings allow datasets and visualizations to be shared publicly, privately, or within team workspaces. This robust sharing mechanism supports collaboration while ensuring data security.
+### 📝 Metadata Management
+- Owners can edit dataset details like name, description, and visibility.
+- Visibility options: `Private`, `Public`, or `Team-only`.
 
-- **Comments & Annotations:**  
-  Real-time commenting and annotation capabilities allow team members to discuss and document insights directly on visualizations, enhancing collaborative analysis and feedback.
+### 🔒 Sharing & Permissions
+- Access control based on dataset visibility and team membership.
+- `Team` visibility automatically links datasets to the selected team.
 
-- **Export Functionality:**  
-  Visualizations can be exported as images (PNG, JPG, or SVG) to facilitate reporting, presentations, and further analysis outside the platform.
+### 💬 Comments & Annotations
+- Teams can collaborate by commenting on charts and datasets.
+- Enhances team communication and shared insights.
 
-- **Robust Backend Infrastructure:**  
-  Utilizing PostgreSQL for metadata and user data ensures reliable, scalable storage, while cloud storage integration AWS S3 provides secure and efficient file handling.
+### 📤 Export Visualizations
+- Export any chart as **PNG** or **JPG** using one-click export buttons.
+- Supports integration into reports or external presentations.
 
-This comprehensive feature set addresses the key challenges of data collaboration and analysis by combining user-friendly interfaces, robust backend technologies, and real-time collaboration tools in one integrated platform.
+---
+
+### How We Meet the Project Requirements
+
+Our application meets **all core technical requirements** defined by the course:
+
+- **Frontend**: Built with **Next.js 13+ App Router**, styled using **Tailwind CSS**, and uses **shadcn/ui** components for clean, accessible UIs.
+- **Responsive Design**: Implemented using **Tailwind CSS** with mobile-first layouts and adaptive components across all pages.
+- **Backend**: Uses **Next.js API Routes** for data handling, and server logic for mutations (dataset edits, team management, etc.).
+- **Server Actions / Mutations**: Dataset metadata updates, team member additions/removals, and dataset creation are all handled via server-side actions or APIs.
+- **Database**: All user, dataset, team, and visualization metadata is stored in **PostgreSQL**.
+- **Cloud Storage**: Uploaded files are stored in an **S3-compatible** cloud bucket, and integrated with upload + metadata flow.
+
+### Advanced Features Implemented
+
+- ✅ **User Authentication & Authorization**  
+  Login/signup with protected routes, session state, and role-based UI.
+
+- ✅ **File Handling & Processing**  
+  Upload and parse **CSV**, **JSON**, and **Excel** files using Papaparse & SheetJS.
+
+- ✅ **API Integration with External Services**  
+  Files stored via **S3-compatible API**, plus **OAuth-based** session validation via `/api/auth/get-session.
+
+- ✅ **Advanced State Management**  
+  Global `TeamContext` shares active team across pages (e.g., upload, metadata, visualizations).
+
+
 
 
 ---
