@@ -37,12 +37,12 @@ export default function UploadPage() {
 
             // handle the upload error
             if (!uploadRes.ok) {
-                setMessage('❌ Upload failed.');
+                setMessage('Upload failed.');
                 throw new Error(await uploadRes.text())
             }
 
             const { url: fileUrl } = await uploadRes.json()
-            setMessage(`✅ File uploaded successfully!`);
+            setMessage(`File uploaded successfully!`);
             // setMessage(`✅ File uploaded successfully! url: ${result.url}`);
 
             const metadataRes = await fetch('/api/dataset', {
@@ -63,7 +63,7 @@ export default function UploadPage() {
 
             if (!metadataRes.ok) throw new Error(await metadataRes.text())
 
-            setMessage(`✅ Dataset saved!`)
+            setMessage(`Dataset saved!`)
         }
         catch (e: any) {
             // Handle errors here

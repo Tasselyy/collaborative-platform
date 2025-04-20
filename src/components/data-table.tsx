@@ -6,6 +6,8 @@ import {
   useReactTable,
   getCoreRowModel,
   flexRender,
+  getSortedRowModel,
+  SortingState,
 } from "@tanstack/react-table";
 import {
   Table,
@@ -63,19 +65,27 @@ export function DataTable() {
     router.push(`/dashboard/metadata/${dataset.id}`);
   };
 
-  // Column definitions with clickable rows
+  // Column definitions with clickable rows and sorting
   const columns: ColumnDef<DatasetRecord>[] = [
     {
       accessorKey: "name",
-      header: "Name",
-      cell: ({ row }) => row.getValue("name"),
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-right justify-center w-full"
+        >
+          Name <ArrowUpDown className="ml-1 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => <div className="text-center">{row.getValue("name")}</div>,
     },
     {
       accessorKey: "description",
       header: "Description",
       cell: ({ row }) => {
         const desc = row.getValue("description") as string;
-        return desc.length > 50 ? desc.slice(0, 50) + "..." : desc;
+        return <div className="text-center">{desc.length > 50 ? desc.slice(0, 50) + "..." : desc}</div>;
       },
     },
     {
@@ -84,11 +94,12 @@ export function DataTable() {
         <Button
           variant="ghost"
           onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-right justify-center w-full"
         >
           Upload Time <ArrowUpDown className="ml-1 h-4 w-4" />
         </Button>
       ),
-      cell: ({ row }) => new Date(row.getValue("createdAt")).toLocaleString(),
+      cell: ({ row }) => <div className="text-center">{new Date(row.getValue("createdAt")).toLocaleString()}</div>,
       sortingFn: (a, b) =>
         new Date(a.getValue("createdAt")).getTime() -
         new Date(b.getValue("createdAt")).getTime(),
@@ -96,22 +107,38 @@ export function DataTable() {
     {
       accessorKey: "team",
       header: "Team",
-      cell: ({ row }) => row.getValue("team") || "None",
+      cell: ({ row }) => <div className="text-center">{row.getValue("team") || "None"}</div>,
     },
     {
       accessorKey: "visibility",
       header: "Visibility",
-      cell: ({ row }) => row.getValue("visibility"),
+      cell: ({ row }) => <div className="text-center">{row.getValue("visibility")}</div>,
     },
     {
       accessorKey: "visualizations",
-      header: "Visualizations",
-      cell: ({ row }) => row.getValue("visualizations"),
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-right justify-center w-full"
+        >
+          Visualizations <ArrowUpDown className="ml-1 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => <div className="text-center">{row.getValue("visualizations")}</div>,
     },
     {
       accessorKey: "owner",
-      header: "Owner",
-      cell: ({ row }) => row.getValue("owner"),
+      header: ({ column }) => (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex items-right justify-center w-full"
+        >
+          Owner <ArrowUpDown className="ml-1 h-4 w-4" />
+        </Button>
+      ),
+      cell: ({ row }) => <div className="text-center">{row.getValue("owner")}</div>,
     },
   ];
 
@@ -193,24 +220,32 @@ function DatasetSection({
   columns: ColumnDef<DatasetRecord>[];
   onRowClick: (dataset: DatasetRecord) => void;
 }) {
+  // Add sorting state
+  const [sorting, setSorting] = useState<SortingState>([]);
+
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    onSortingChange: setSorting,
+    state: {
+      sorting,
+    },
   });
 
   if (!data.length) return null;
 
   return (
     <div className="mb-10">
-      <h2 className="text-lg font-semibold mb-3">{title}</h2>
+      <h2 className="text-lg font-semibold mb-3 text-left">{title}</h2>
       <div className="rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((group) => (
               <TableRow key={group.id}>
                 {group.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} className="text-center">
                     {flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 ))}
