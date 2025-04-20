@@ -96,10 +96,16 @@ export default function MetadataPage() {
   }
 
   return (
-    <div className="py-6 ml-8 max-w-5xl">
-      <div className="flex items-center mb-6">
-       
+    <div className="container mx-auto py-6 px-4">
+      <div className="flex items-baseline space-x-2">
+      
         <h1 className="text-2xl font-bold">Dataset Metadata</h1>
+        <button 
+          className="text-sm text-black-600 hover:underline"
+          onClick={() => router.push("/dashboard/dataTable")}
+        >
+          [Back]
+        </button>
         
         {isOwner && !isEditing && (
           <Button 
@@ -186,41 +192,41 @@ export default function MetadataPage() {
           ) : (
             // View mode
             <>
-              <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-                <div className="overflow-hidden">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <div>
                   <h3 className="text-sm font-medium text-gray-500">Name</h3>
-                  <p className="mt-1 truncate">{dataset.name}</p>
+                  <p className="mt-1">{dataset.name}</p>
                 </div>
                 
-                <div className="overflow-hidden">
+                <div>
                   <h3 className="text-sm font-medium text-gray-500">Visibility</h3>
-                  <p className="mt-1 truncate">{dataset.visibility}</p>
+                  <p className="mt-1">{dataset.visibility}</p>
                 </div>
                 
-                <div className="overflow-hidden">
+                <div>
                   <h3 className="text-sm font-medium text-gray-500">Created At</h3>
-                  <p className="mt-1 truncate">{new Date(dataset.createdAt).toLocaleString()}</p>
+                  <p className="mt-1">{new Date(dataset.createdAt).toLocaleString()}</p>
                 </div>
                 
-                <div className="overflow-hidden">
+                <div>
                   <h3 className="text-sm font-medium text-gray-500">Owner</h3>
-                  <p className="mt-1 truncate">{dataset.owner}</p>
+                  <p className="mt-1">{dataset.owner}</p>
                 </div>
                 
-                <div className="overflow-hidden">
+                <div>
                   <h3 className="text-sm font-medium text-gray-500">Team</h3>
-                  <p className="mt-1 truncate">{dataset.team || "None"}</p>
+                  <p className="mt-1">{dataset.team || "None"}</p>
                 </div>
                 
-                <div className="overflow-hidden">
+                <div>
                   <h3 className="text-sm font-medium text-gray-500">Visualizations</h3>
-                  <p className="mt-1 truncate">{dataset.visualizations}</p>
+                  <p className="mt-1">{dataset.visualizations}</p>
                 </div>
               </div>
               
-              <div className="overflow-hidden">
+              <div>
                 <h3 className="text-sm font-medium text-gray-500">Description</h3>
-                <p className="mt-1 break-words">{dataset.description}</p>
+                <p className="mt-1 whitespace-pre-wrap">{dataset.description}</p>
               </div>
             </>
           )}
