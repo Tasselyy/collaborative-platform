@@ -16,6 +16,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input"
 import { ArrowUpDown } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTeam } from "@/context/TeamContext";
@@ -38,6 +39,8 @@ export function DataTable() {
   const { data: session } = authClient.useSession();
   const currentUser = session?.user?.name ?? "";
   const [datasets, setDatasets] = useState<DatasetRecord[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState(searchQuery);
   const router = useRouter();
 
   useEffect(() => {
@@ -46,6 +49,14 @@ export function DataTable() {
       .then((res) => res.json())
       .then(setDatasets);
   }, [activeTeam]);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+    }, 300); // ⏱ 300ms debounce
+
+    return () => clearTimeout(timeout);
+  }, [searchQuery]);
 
   // Handles row click and navigates to metadata page
   const handleRowClick = (dataset: DatasetRecord) => {
@@ -105,29 +116,65 @@ export function DataTable() {
   ];
 
   // Divide into three sections
-  const publicData = datasets.filter((d) => d.visibility === "PUBLIC");
-  const privateData = datasets.filter(
-    (d) => d.visibility === "PRIVATE" && d.owner === currentUser
+  const query = debouncedQuery.toLowerCase();
+
+  const publicData = datasets.filter(
+    (d) =>
+      d.visibility === "PUBLIC" &&
+      d.name.toLowerCase().includes(query)
   );
-  const teamData = datasets.filter((d) => d.visibility === "TEAM");
+
+  const privateData = datasets.filter(
+    (d) =>
+      d.visibility === "PRIVATE" &&
+      d.owner === currentUser &&
+      d.name.toLowerCase().includes(query)
+  );
+
+  const teamData = datasets.filter(
+    (d) =>
+      d.visibility === "TEAM" &&
+      d.name.toLowerCase().includes(query)
+  );
 
   return (
     <div className="w-full">
-      <DatasetSection 
-        title="Public Datasets" 
-        data={publicData} 
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+        <div className="text-sm text-muted-foreground">
+          {activeTeam ? (
+            <>
+              Currently Selected Team:{" "}
+              <span className="font-semibold text-foreground">
+                {activeTeam.name}
+              </span>
+            </>
+          ) : (
+            "No team selected"
+          )}
+        </div>
+
+        <Input
+          placeholder="Search datasets by name..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="max-w-sm"
+        />
+      </div>
+      <DatasetSection
+        title="Public Datasets"
+        data={publicData}
         columns={columns}
         onRowClick={handleRowClick}
       />
-      <DatasetSection 
-        title={`Private Datasets (owned by ${currentUser})`} 
-        data={privateData} 
+      <DatasetSection
+        title={`Private Datasets (owned by ${currentUser})`}
+        data={privateData}
         columns={columns}
         onRowClick={handleRowClick}
       />
-      <DatasetSection 
-        title="Team Datasets" 
-        data={teamData} 
+      <DatasetSection
+        title="Team Datasets"
+        data={teamData}
         columns={columns}
         onRowClick={handleRowClick}
       />
@@ -135,13 +182,13 @@ export function DataTable() {
   );
 }
 
-function DatasetSection({ 
-  title, 
+function DatasetSection({
+  title,
   data,
   columns,
   onRowClick
-}: { 
-  title: string; 
+}: {
+  title: string;
   data: DatasetRecord[];
   columns: ColumnDef<DatasetRecord>[];
   onRowClick: (dataset: DatasetRecord) => void;
@@ -172,8 +219,8 @@ function DatasetSection({
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows.map((row) => (
-              <TableRow 
-                key={row.id} 
+              <TableRow
+                key={row.id}
                 onClick={() => onRowClick(row.original)}
                 className="cursor-pointer hover:bg-gray-100"
               >
