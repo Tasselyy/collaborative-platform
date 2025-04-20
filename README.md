@@ -307,10 +307,42 @@ To enable GitHub and Google login, you need to register your application with ea
     > ⚠️ You also need to bind port and interface according to your deployment setup. Example:
     HOST=0.0.0.0 PORT=3000 npm run start
 ### Cloud Storage Configuration
-TODO
+This project uses Amazon S3 for storing uploaded files.
+
+#### Configuration Steps:
+
+1. **Create an S3 Bucket**  
+   
+   - Region: e.g., `us-east-1`
+   - Enable signed URL access
+   
+2. **Set CORS Policy** for development:
+   
+   ```json
+   [
+     {
+       "AllowedHeaders": ["*"],
+       "AllowedMethods": ["GET", "POST", "PUT"],
+       "AllowedOrigins": ["http://localhost:3000", "https://collaborative-platform-five.vercel.app"],
+       "ExposeHeaders": [],
+       "MaxAgeSeconds": 3000
+     }
+   ]
 
 ## Deployment Information
-TODO
+**Platform**: [Vercel](https://vercel.com)
+
+**Live Domain**: https://collaborative-platform-five.vercel.app
+
+**Branch**: `main`
+
+**Framework**: Next.js 15
+
+**Authentication**: Better Auth (OAuth for Github and Google)
+
+**Database**: PostgreSQL (Neon.tech)
+
+**ORM**: Prisma
 
 ## Individual Contributions
 
