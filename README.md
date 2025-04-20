@@ -259,7 +259,7 @@ To enable GitHub and Google login, you need to register your application with ea
    ```
 
    > The app should now be running at `http://localhost:3000`.
-### 🚀 Deployment Instructions
+### Local Deployment Instructions
 1. **Install Dependencies**
    ```bash
    npm install
