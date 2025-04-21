@@ -172,7 +172,7 @@ The API is organized into several logical modules:
 - **Cloud Storage:** Secure file uploads and downloads via S3 signed URLs.
 - **User Search:** Search users to invite to teams or projects.
 
-👉 For full details including request formats, parameters, response examples, and error codes, see: [`docs/API.md`](https://github.com/Tasselyy/collaborative-platform/blob/table_view/docs/API.md)
+👉 For full details including request formats, parameters, response examples, and error codes, see: [`docs/API.md`](./docs/API.md)
 
 ---
 ## 📁 Prepared Files for testing
