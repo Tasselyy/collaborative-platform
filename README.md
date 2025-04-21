@@ -192,15 +192,19 @@ We use **OAuth-only login** — no passwords required.
 
 Once you're logged in, you'll land on the **Workspace Dashboard**.
 
-#### 🧱 Sidebar Overview
+### 🧱 Sidebar Overview
 - On the **left sidebar**, you’ll find the main navigation.
 - At the **top**, there is a **Team Switcher**:
   - If you don’t have any teams yet, click it to **create a new team**.
 - Underneath is the **Teams section**:
   - It lists all the teams you are currently a member of.
   - At the bottom, there’s a **"Create New Team"** button to create a new team anytime.
+- Under the **Platform > Data Analysis** section in the sidebar, you can access:
+  - **Dataset Table View**
+  - **Visualization**
+  - **Upload**
 
-#### 🛠️ Creating a Team
+### 🛠️ Creating a Team
 1. On the **Create Team** page:
    - Enter a name for your team.
    - Use the **search bar** to find users by name or email.
@@ -213,7 +217,7 @@ Once you're logged in, you'll land on the **Workspace Dashboard**.
 
 2. When you're ready, click **"Create Team"** to finalize the team.
 
-#### 👥 Team Management
+### 👥 Team Management
 - Click on a team name under **Your Teams** to open the **Team Management Page**.
 - This page shows:
   - Basic team metadata
@@ -226,6 +230,39 @@ Once you're logged in, you'll land on the **Workspace Dashboard**.
 #### 
 
 > 👥 Regular team members can view the team and members but **cannot add/remove users** or **disband the team**.
+### 📁 Dataset Table View
+
+When you click into the **Dataset Table View**, you’ll see three sections:
+
+1. **Public Datasets**  
+   Contains all datasets with **public visibility** available to all users.
+
+2. **Private Datasets**  
+   Displays only the datasets uploaded by **you** (the current logged-in user). These are not visible to anyone else.
+
+3. **Team Datasets**  
+   Shows datasets shared with the **currently selected team** (via the **Team Switcher** at the top left).  
+   You can also verify the active team under the **Dataset Overview** section.
+
+> 🔁 When you switch teams using the **Team Switcher**, the **Team Datasets** section updates to show datasets for the newly selected team.
+#### 🔍 Viewing and Editing Dataset Metadata
+
+- Clicking a row in the Dataset Table navigates to the **Dataset Metadata Page**.
+- At the top-right corner, click **"Edit Metadata"** to open the metadata editing page.
+##### 📝 Editing Metadata
+
+On the **Metadata Edit Page**, you can:
+
+- Edit the **dataset name** and **description**
+- Change the **visibility** to:
+  - `Private`
+  - `Public`
+  - `Team`
+
+> 🔐 If you choose **Team** visibility:
+> - The dataset will be assigned to the **currently selected team** from the Team Switcher.
+> - You **must have a team selected** — otherwise, you **cannot** set visibility to `Team`.
+
 ---
 
 ## Development and Deployment Guide
