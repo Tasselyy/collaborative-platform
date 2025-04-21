@@ -68,10 +68,9 @@ Our project follows the **Next.js Full-Stack Architecture**, utilizing **Next.js
 ### 📊 Backend
 
 - **Server Logic**: Next.js Server Components and API Routes
-- **Authentication**: [NextAuth.js v5](https://authjs.dev/)
+- **Authentication**: Better Auth 
 - **Database**: [PostgreSQL](https://www.postgresql.org/) with [Prisma ORM](https://www.prisma.io/)
 - **Cloud File Storage**: [AWS S3](https://aws.amazon.com/s3/) using `@aws-sdk/client-s3`, `presigned-post`, and `request-presigner`
-- **Password Hashing**: `bcryptjs`
 
 ### 🔧 Development & Tooling
 
@@ -135,7 +134,7 @@ Our platform enables data scientists and teams to collaborate on datasets, visua
 
 Our application meets **all core technical requirements** defined by the course:
 
-- **Frontend**: Built with **Next.js 13+ App Router**, styled using **Tailwind CSS**, and uses **shadcn/ui** components for clean, accessible UIs.
+- **Frontend**: Built with **Next.js 15+ App Router**, styled using **Tailwind CSS**, and uses **shadcn/ui** components for clean, accessible UIs.
 - **Responsive Design**: Implemented using **Tailwind CSS** with mobile-first layouts and adaptive components across all pages.
 - **Backend**: Uses **Next.js API Routes** for data handling, and server logic for mutations (dataset edits, team management, etc.).
 - **Server Actions / Mutations**: Dataset metadata updates, team member additions/removals, and dataset creation are all handled via server-side actions or APIs.
