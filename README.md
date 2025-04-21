@@ -191,6 +191,14 @@ We use **OAuth-only login** — no passwords required.
 ### 🧭 Navigating the Workspace Dashboard
 
 Once you're logged in, you'll land on the **Workspace Dashboard**.
+### ⌚️ Dashboard Overview
+When navigating to the dashboard area, three sections are displayed. Users can click the button to choose their services.
+
+- **Upload Dataset**: Select 1. upload your dataset.
+- **Dataset Overview**: Select 2. View Your Datsets.
+- **Visualization**: Selection 3. Create Visualizations.
+
+![Dashboard](./assets/Dashboard.png)
 
 ### 🧱 Sidebar Overview
 - On the **left sidebar**, you’ll find the main navigation.
@@ -216,6 +224,7 @@ Once you're logged in, you'll land on the **Workspace Dashboard**.
      - Click their name under **Selected Members**.
 
 2. When you're ready, click **"Create Team"** to finalize the team.
+![create_team](./assets/Create_Team.png)
 
 ### 👥 Team Management
 - Click on a team name under **Your Teams** to open the **Team Management Page**.
@@ -228,6 +237,7 @@ Once you're logged in, you'll land on the **Workspace Dashboard**.
   - You can also **disband the team**
   - Adding members works the same way as during team creation
 #### 
+![team_manage](./assets/Team%20Management.png)
 
 > 👥 Regular team members can view the team and members but **cannot add/remove users** or **disband the team**.
 
@@ -245,6 +255,7 @@ When you click into the **Dataset Table View**, you’ll see three sections:
    Shows datasets shared with the **currently selected team** (via the **Team Switcher** at the top left).  
    You can also verify the active team under the **Dataset Overview** section.
 
+![table_view](./assets/Data%20Table%20View.png)
 > 🔁 When you switch teams using the **Team Switcher**, the **Team Datasets** section updates to show datasets for the newly selected team.
 #### 🔍 Viewing and Editing Dataset Metadata
 
@@ -275,6 +286,8 @@ On the **Metadata Edit Page**, you can:
   - A Visibility section to manage the visibility of your dataset, which can be one of 'Public', 'Private', and 'Team Only'.
 - After filling out the sections, click the **Upload** button to create the dataset.
 
+![upload](./assets/Upload.png)
+
 #### 👀 Visualization
 - Create New Visualization
   - Choose a dataset you want to visualize.
@@ -294,6 +307,8 @@ The visualizations have certain parsing rules. So your file should contains seve
   - Pie: [**'x'**]
   - Radar: [**'x'**, **'y'**, **'group'**(optinal)]
   - Bubble: [**'x'**, **'y'**, **'z'**(optional), **'group'**(optinal)]
+  
+> !!! We provide a list of files (**csv**, **json**, **xlsx**) for different types of Figures. You can try our provided files for convenience. The files are provied in assets files. 
 
 **❓ Field meaning**
 - Bar/Line: **x** - x-axis, **y** - y-axis, **group** - Group of the data point. 
@@ -306,10 +321,12 @@ The visualizations have certain parsing rules. So your file should contains seve
   - Click the button to Export as PNG or JPG.
   - Save / update the Visualization.
 
+![visualization](./assets/visualization.png)
+
 **📚 Comments**
   - Comments will be enabled when **loading an existing visualizations**.
   - Users can add or delete the comments.
-
+![comments](./assets/comments.png)
 
 ---
 
