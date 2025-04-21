@@ -175,7 +175,11 @@ The API is organized into several logical modules:
 👉 For full details including request formats, parameters, response examples, and error codes, see: [`docs/API.md`](https://github.com/Tasselyy/collaborative-platform/blob/table_view/docs/API.md)
 
 ---
+## 📁 Prepared Files for testing
 
+We provide a list of files in different extension (**csv**, **json**, **xlsx**) for the users to test our visualization. For each of visualization types (**line**, **bar**, **radar**, **bubble**, **pie**), we prepare some files for testing. You can find them in the `assets` folder. All file names are in the format of `{visualization_type}.{ext}`.
+
+---
 ## User Guide
 
 ### Signing Up and Logging In
