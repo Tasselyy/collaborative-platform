@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { ChevronsUpDown, Plus, Users, Briefcase, Building } from "lucide-react"
+import { ChevronsUpDown, Plus, Users} from "lucide-react"
 import { useRouter } from "next/navigation"
 
 import {
@@ -24,12 +24,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { useTeam } from "@/context/TeamContext";
 // Function to get an icon based on the team name
 function getTeamIcon(teamName: string): React.ElementType {
-  // Simple logic to assign an icon based on the first letter of the team name
-  const firstChar = teamName.charAt(0).toLowerCase()
-  
-  if (['a', 'b', 'c', 'd', 'e'].includes(firstChar)) return Building
-  if (['f', 'g', 'h', 'i', 'j'].includes(firstChar)) return Briefcase
-  return Users
+  return Users;
 }
 
 export function TeamSwitcher() {

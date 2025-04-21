@@ -108,10 +108,18 @@ export async function removeTeamMember(
 }
 
 export async function disbandTeam(teamId: string) {
+  // 1. Reassign datasets to PRIVATE or PUBLIC
+  await prisma.dataset.updateMany({
+    where: { teamId },
+    data: {
+      teamId: null,
+      visibility: "PRIVATE", // or "PUBLIC", depending on your logic
+    },
+  });
+
+  // 2. Delete the team
   return prisma.team.delete({
-    where: {
-      id: teamId
-    }
+    where: { id: teamId },
   });
 }
 
