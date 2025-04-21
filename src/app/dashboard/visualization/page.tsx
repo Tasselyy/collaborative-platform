@@ -214,7 +214,7 @@ export default function VisualizationPage() {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Multi-dataset Chart</h1>
+      <h1 className="text-2xl font-bold mb-4">Visualization</h1>
       <DatasetSelector
         datasets={availableDatasets}
         selectedId={selectedDatasetId}
