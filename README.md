@@ -230,6 +230,7 @@ Once you're logged in, you'll land on the **Workspace Dashboard**.
 #### 
 
 > 👥 Regular team members can view the team and members but **cannot add/remove users** or **disband the team**.
+
 ### 📁 Dataset Table View
 
 When you click into the **Dataset Table View**, you’ll see three sections:
@@ -262,6 +263,53 @@ On the **Metadata Edit Page**, you can:
 > 🔐 If you choose **Team** visibility:
 > - The dataset will be assigned to the **currently selected team** from the Team Switcher.
 > - You **must have a team selected** — otherwise, you **cannot** set visibility to `Team`.
+
+
+#### ⏫ Upload Dataset
+- Click the **Upload** to navigate to the **Upload page**.
+- The page shows:
+  - An area to drag you file for uploading.
+  - A file section to select files on your local computer.
+  - A name section to input the name of the dataset.
+  - A description section to describe the dataset.
+  - A Visibility section to manage the visibility of your dataset, which can be one of 'Public', 'Private', and 'Team Only'.
+- After filling out the sections, click the **Upload** button to create the dataset.
+
+#### 👀 Visualization
+- Create New Visualization
+  - Choose a dataset you want to visualize.
+  - Click the Create New Visualization.
+- Load existing Visualization  
+  - Choose a dataset you want to visualize.
+  - Chosse an existing visualization you have saved.
+  
+**💁 Customize your Visualization**
+  - Enter the Chart title and description for the visualization
+  - Choose the chart type, now we support ['Bar', 'Line', 'Pie', 'Radar', 'Bubble']
+  - Custom visualization function (display legend, font size, animation).
+  
+**🧾 Data Format**
+The visualizations have certain parsing rules. So your file should contains several fields.
+  - Bar/Line: [**'x'**, **'y'**, **'group'**(optinal)]
+  - Pie: [**'x'**]
+  - Radar: [**'x'**, **'y'**, **'group'**(optinal)]
+  - Bubble: [**'x'**, **'y'**, **'z'**(optional), **'group'**(optinal)]
+
+**❓ Field meaning**
+- Bar/Line: **x** - x-axis, **y** - y-axis, **group** - Group of the data point. 
+- Pie: **x** - Value for a certain entity
+- Radar: **x** - a certain property, **y** - value for the property, **group** - Group of the data point. 
+- Bubble: **x** - x-axis, **y** - y-axis, **z** - Radius for the point circle, **group** - Group of the data point.
+
+**📊 Visualization Functions**
+  - Users can edit data to change the visualization.
+  - Click the button to Export as PNG or JPG.
+  - Save / update the Visualization.
+
+**📚 Comments**
+  - Comments will be enabled when **loading an existing visualizations**.
+  - Users can add or delete the comments.
+
 
 ---
 
