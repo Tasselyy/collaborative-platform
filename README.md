@@ -574,7 +574,7 @@ This project uses Amazon S3 for storing uploaded files.
 ## 🧠 Lessons Learned and Concluding Remarks
 
 ### 🔧 Technical Takeaways
-- **Next.js 13 App Router**: Leveraging the latest features like server components and server actions gave us better control over data fetching and performance optimization.
+- **Next.js 15 App Router**: Leveraging the latest features like server components and server actions gave us better control over data fetching and performance optimization.
 - **Cloud Integration (S3)**: Implementing cloud storage taught us best practices in secure file handling, signed URLs, and cross-origin access.
 - **PostgreSQL + Prisma**: Using a strongly typed ORM helped us ensure data integrity and improved developer productivity with autocompletion and schema migrations.
 - **Authentication (OAuth + Session)**: Integrating `better-auth` with GitHub OAuth gave us practical experience with secure authentication and user management.
