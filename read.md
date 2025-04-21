@@ -278,16 +278,7 @@ To enable GitHub and Google login, you need to register your application with ea
    ```bash
    npm run dev
    ```
-#### Seeding the Database
-To load dummy users into the database during local development, run:
 
-```bash
-npx prisma db seed
-```
-
-> This uses the seed script defined in `prisma/seed_team.ts` to populate the database with sample user data.
-### Cloud Storage Configuration
-This project uses Amazon S3 for storing uploaded files.
    > The app should now be running at `http://localhost:3000`.
 ### Local Deployment Instructions
 1. **Install Dependencies**
@@ -313,42 +304,10 @@ This project uses Amazon S3 for storing uploaded files.
     > ⚠️ You also need to bind port and interface according to your deployment setup. Example:
     HOST=0.0.0.0 PORT=3000 npm run start
 ### Cloud Storage Configuration
-This project uses Amazon S3 for storing uploaded files.
-
-#### Configuration Steps:
-
-1. **Create an S3 Bucket**  
-   
-   - Region: e.g., `us-east-1`
-   - Enable signed URL access
-   
-2. **Set CORS Policy** for development:
-   
-   ```json
-   [
-     {
-       "AllowedHeaders": ["*"],
-       "AllowedMethods": ["GET", "POST", "PUT"],
-       "AllowedOrigins": ["http://localhost:3000", "https://collaborative-platform-five.vercel.app"],
-       "ExposeHeaders": [],
-       "MaxAgeSeconds": 3000
-     }
-   ]
+TODO
 
 ## Deployment Information
-**Platform**: [Vercel](https://vercel.com)
-
-**Live Domain**: https://collaborative-platform-five.vercel.app
-
-**Branch**: `main`
-
-**Framework**: Next.js 15
-
-**Authentication**: Better Auth (OAuth for Github and Google)
-
-**Database**: PostgreSQL (Neon.tech)
-
-**ORM**: Prisma
+TODO
 
 ## Individual Contributions
 
@@ -445,3 +404,5 @@ This project uses Amazon S3 for storing uploaded files.
 
 ### 🏁 Final Thoughts
 This project gave us a full-stack, real-world experience of building a collaborative data platform from scratch. We deepened our understanding of modern web technologies, tackled common production challenges (auth, file uploads, permissions), and worked effectively as a team. We're proud of the outcome and the scalability potential of this platform moving forward.
+
+
