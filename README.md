@@ -278,7 +278,16 @@ To enable GitHub and Google login, you need to register your application with ea
    ```bash
    npm run dev
    ```
+#### Seeding the Database
+To load dummy users into the database during local development, run:
 
+```bash
+npx prisma db seed
+```
+
+> This uses the seed script defined in `prisma/seed_team.ts` to populate the database with sample user data.
+### Cloud Storage Configuration
+This project uses Amazon S3 for storing uploaded files.
    > The app should now be running at `http://localhost:3000`.
 ### Local Deployment Instructions
 1. **Install Dependencies**
