@@ -179,12 +179,53 @@ The API is organized into several logical modules:
 ## User Guide
 
 ### Signing Up and Logging In
+We use **OAuth-only login** — no passwords required.
 
-TODO
+1. Click **Login** on the home page.
+2. Choose either **GitHub** or **Google** as your sign-in provider.
+3. On your **first login**, a user account will be automatically created in the system.
+4. For all future logins, you’ll be logged in automatically using the same provider.
 
-### Navigating the Dashboard
-TODO
+> 💡 Make sure to use the **same GitHub or Google account** every time to access your user data.
 
+### 🧭 Navigating the Workspace Dashboard
+
+Once you're logged in, you'll land on the **Workspace Dashboard**.
+
+#### 🧱 Sidebar Overview
+- On the **left sidebar**, you’ll find the main navigation.
+- At the **top**, there is a **Team Switcher**:
+  - If you don’t have any teams yet, click it to **create a new team**.
+- Underneath is the **Teams section**:
+  - It lists all the teams you are currently a member of.
+  - At the bottom, there’s a **"Create New Team"** button to create a new team anytime.
+
+#### 🛠️ Creating a Team
+1. On the **Create Team** page:
+   - Enter a name for your team.
+   - Use the **search bar** to find users by name or email.
+   - Press **Enter** or click **Search** to display matching users.
+   - Click a user to add them as a member.  
+     They will appear under **Selected Members**.
+   - To **remove** a user:
+     - Click them again in the search list **or**
+     - Click their name under **Selected Members**.
+
+2. When you're ready, click **"Create Team"** to finalize the team.
+
+#### 👥 Team Management
+- Click on a team name under **Your Teams** to open the **Team Management Page**.
+- This page shows:
+  - Basic team metadata
+  - A list of all members
+
+- If you are the **team owner**:
+  - You can **add or remove members**
+  - You can also **disband the team**
+  - Adding members works the same way as during team creation
+#### 
+
+> 👥 Regular team members can view the team and members but **cannot add/remove users** or **disband the team**.
 ---
 
 ## Development and Deployment Guide
@@ -218,6 +259,7 @@ MY_AWS_ACCESS_KEY=
 MY_AWS_SECRET_KEY=
 MY_AWS_REGION=
 ```
+---
 ### Better Auth configuration
 💡 Set `BETTER_AUTH_URL` depending on your environment:  
  - For **local development**, use: `http://localhost:3000`  
@@ -230,6 +272,7 @@ MY_AWS_REGION=
    ```bash
    openssl rand -base64 32
    ```
+---
 ### 🔑 OAuth Provider Setup
 
 To enable GitHub and Google login, you need to register your application with each provider and configure the credentials accordingly.
@@ -257,7 +300,7 @@ To enable GitHub and Google login, you need to register your application with ea
 
 - 📘 Better Auth Google Docs:  
   [https://www.better-auth.com/docs/authentication/google](https://www.better-auth.com/docs/authentication/google)
-
+---
 ### Development Instructions
 
 1. **Install Dependencies**
@@ -286,9 +329,7 @@ npx prisma db seed
 ```
 
 > This uses the seed script defined in `prisma/seed_team.ts` to populate the database with sample user data.
-### Cloud Storage Configuration
-This project uses Amazon S3 for storing uploaded files.
-   > The app should now be running at `http://localhost:3000`.
+---
 ### Local Deployment Instructions
 1. **Install Dependencies**
    ```bash
@@ -312,6 +353,7 @@ This project uses Amazon S3 for storing uploaded files.
    ```
     > ⚠️ You also need to bind port and interface according to your deployment setup. Example:
     HOST=0.0.0.0 PORT=3000 npm run start
+---
 ### Cloud Storage Configuration
 This project uses Amazon S3 for storing uploaded files.
 
